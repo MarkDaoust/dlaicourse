@@ -92,7 +92,6 @@ model = tf.keras.models.Sequential([
 model.compile(loss=# YOUR CODE HERE #, optimizer=# YOUR CODE HERE#))
 model.fit(dataset,epochs=100,verbose=0)
 
-
 ```
 
 

@@ -105,11 +105,11 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(128, activation=tf.nn.relu),
     tf.keras.layers.Dense(26, activation=tf.nn.softmax)])
 
-model.compile(optimizer = tf.train.AdamOptimizer(),
+model.compile(optimizer = tf.optimizers.Adam(),
               loss = 'sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit_generator(train_datagen.flow(training_images, training_labels, batch_size=32),
+history = model.fit(train_datagen.flow(training_images, training_labels, batch_size=32),
                               steps_per_epoch=len(training_images) / 32,
                               epochs=15,
                               validation_data=validation_datagen.flow(testing_images, testing_labels, batch_size=32),
@@ -162,8 +162,8 @@ model.evaluate(testing_images, testing_labels)
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 

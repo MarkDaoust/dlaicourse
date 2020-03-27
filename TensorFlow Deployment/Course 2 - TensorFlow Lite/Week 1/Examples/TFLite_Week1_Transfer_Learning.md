@@ -131,7 +131,6 @@ for image_batch, label_batch in train_batches.take(1):
 image_batch.shape
 ```
 
-
 ## Defining the Model
 
 All it takes is to put a linear classifier on top of the `feature_extractor_layer` with the Hub module.

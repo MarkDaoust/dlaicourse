@@ -42,7 +42,6 @@ Protocol messages are defined by `.proto` files, these are often the easiest way
 
 The `tf.Example` message (or protobuf) is a flexible message type that represents a `{"string": value}` mapping. It is designed for use with TensorFlow and is used throughout the higher-level APIs such as [TFX](https://www.tensorflow.org/tfx/).
 
-
 This notebook will demonstrate how to create, parse, and use the `tf.Example` message, and then serialize, write, and read `tf.Example` messages to and from `.tfrecord` files.
 
 Note: While useful, these structures are optional. There is no need to convert existing code to use TFRecords, unless you are using [`tf.data`](https://www.tensorflow.org/guide/datasets) and reading data is still the bottleneck to training. See [Data Input Pipeline Performance](https://www.tensorflow.org/guide/performance/datasets) for dataset performance tips.

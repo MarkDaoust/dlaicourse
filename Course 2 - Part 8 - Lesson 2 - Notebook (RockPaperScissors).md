@@ -148,7 +148,7 @@ model.summary()
 
 model.compile(loss = 'categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-history = model.fit_generator(train_generator, epochs=25, validation_data = validation_generator, verbose = 1)
+history = model.fit(train_generator, epochs=25, validation_data = validation_generator, verbose = 1)
 
 model.save("rps.h5")
 
@@ -157,8 +157,8 @@ model.save("rps.h5")
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 

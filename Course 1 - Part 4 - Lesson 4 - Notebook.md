@@ -23,7 +23,7 @@ import tensorflow as tf
 
 class myCallback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
-    if(logs.get('acc')>0.6):
+    if(logs.get('accuracy')>0.6):
       print("\nReached 60% accuracy so cancelling training!")
       self.model.stop_training = True
 
@@ -39,7 +39,7 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Dense(512, activation=tf.nn.relu),
   tf.keras.layers.Dense(10, activation=tf.nn.softmax)
 ])
-model.compile(optimizer='adam',
+model.compile(optimizer=tf.optimizers.Adam(),
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 

@@ -25,7 +25,6 @@ corpus = []
 
 
 ```
-
 # Note that I cleaned the Stanford dataset to remove LATIN1 encoding to make it easier for Python CSV reader
 # You can do that yourself with:
 # iconv -f LATIN1 -t UTF8 training.1600000.processed.noemoticon.csv -o training_cleaned.csv
@@ -49,8 +48,6 @@ with open("/tmp/training_cleaned.csv") as csvfile:
             list_item.append(1)
         num_sentences = num_sentences + 1
         corpus.append(list_item)
-
-
 
 ```
 
@@ -198,8 +195,8 @@ import matplotlib.pyplot as plt
 # Retrieve a list of list results on training and test data
 # sets for each training epoch
 #-----------------------------------------------------------
-acc=history.history['acc']
-val_acc=history.history['val_acc']
+acc=history.history['accuracy']
+val_acc=history.history['val_accuracy']
 loss=history.history['loss']
 val_loss=history.history['val_loss']
 

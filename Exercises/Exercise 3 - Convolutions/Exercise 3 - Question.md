@@ -31,5 +31,4 @@ model = tf.keras.models.Sequential([
 
 # YOUR CODE ENDS HERE
 
-
 ```

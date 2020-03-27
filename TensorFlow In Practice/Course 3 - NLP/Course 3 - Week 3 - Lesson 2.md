@@ -61,7 +61,6 @@ testing_padded = np.array(testing_padded)
 testing_labels = np.array(testing_labels)
 history = model.fit(training_padded, training_labels, epochs=num_epochs, validation_data=(testing_padded, testing_labels), verbose=1)
 
-
 ```
 
 
@@ -77,7 +76,7 @@ def plot_graphs(history, string):
   plt.legend([string, 'val_'+string])
   plt.show()
 
-plot_graphs(history, 'acc')
+plot_graphs(history, 'accuracy')
 plot_graphs(history, 'loss')
 ```
 

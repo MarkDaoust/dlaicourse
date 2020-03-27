@@ -1,15 +1,6 @@
 ```
-# NOTE: PLEASE MAKE SURE YOU ARE RUNNING THIS IN A PYTHON3 ENVIRONMENT
-
 import tensorflow as tf
 print(tf.__version__)
-
-# This is needed for the iterator over the data
-# But not necessary if you have TF 2.0 installed
-#!pip install tensorflow==2.0.0-beta0
-
-
-tf.enable_eager_execution()
 
 # !pip install -q tensorflow-datasets
 ```
@@ -68,7 +59,6 @@ padded = pad_sequences(sequences,maxlen=max_length, truncating=trunc_type)
 testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
 testing_padded = pad_sequences(testing_sequences,maxlen=max_length)
 
-
 ```
 
 
@@ -125,8 +115,6 @@ out_m.close()
 
 
 ```
-
-
 try:
   from google.colab import files
 except ImportError:

@@ -100,7 +100,6 @@ model = tf.keras.models.Sequential([
 model.compile(loss="mse", optimizer=tf.keras.optimizers.SGD(lr=1e-6, momentum=0.9))
 model.fit(dataset,epochs=100,verbose=0)
 
-
 ```
 
 

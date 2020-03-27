@@ -178,7 +178,7 @@ from tensorflow.keras.optimizers import RMSprop
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=0.001),
-              metrics=['acc'])
+              metrics=['accuracy'])
 ```
 
 ### Data Preprocessing
@@ -187,7 +187,7 @@ Let's set up data generators that will read pictures in our source folders, conv
 
 As you may already know, data that goes into neural networks should usually be normalized in some way to make it more amenable to processing by the network. (It is uncommon to feed raw pixels into a convnet.) In our case, we will preprocess our images by normalizing the pixel values to be in the `[0, 1]` range (originally all values are in the `[0, 255]` range).
 
-In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit_generator`, `evaluate_generator`, and `predict_generator`.
+In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit`, `evaluate_generator`, and `predict_generator`.
 
 
 ```
@@ -215,7 +215,7 @@ The Loss and Accuracy are a great indication of progress of training. It's makin
 
 
 ```
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=8,  
       epochs=15,

@@ -1,10 +1,4 @@
 ```
-!pip install tensorflow==2.0.0b1
-
-```
-
-
-```
 import tensorflow as tf
 print(tf.__version__)
 
@@ -200,7 +194,6 @@ plt.show()
 
 
 ```
-
 print(# YOUR CODE HERE)
 print(# YOUR CODE HERE)
 # EXPECTED OUTPUT

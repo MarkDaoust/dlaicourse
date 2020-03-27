@@ -91,7 +91,6 @@ model.fit(dataset,epochs=100,verbose=0)
 
 print("Layer weights {}".format(l0.get_weights()))
 
-
 ```
 
 

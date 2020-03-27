@@ -15,7 +15,7 @@ zip_ref.close()
 
 class myCallback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
-    if(logs.get('acc')>DESIRED_ACCURACY):
+    if(logs.get('accuracy')>DESIRED_ACCURACY):
       print("\nReached 99.9% accuracy so cancelling training!")
       self.model.stop_training = True
 
@@ -41,7 +41,7 @@ from tensorflow.keras.optimizers import RMSprop
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=0.001),
-              metrics=['acc'])
+              metrics=['accuracy'])
 ```
 
 
@@ -61,7 +61,7 @@ train_generator = train_datagen.flow_from_directory(
 
 
 ```
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=2,  
       epochs=15,

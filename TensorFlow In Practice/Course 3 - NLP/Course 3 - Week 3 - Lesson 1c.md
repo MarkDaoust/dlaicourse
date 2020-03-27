@@ -12,20 +12,9 @@ print(tf.__version__)
 
 
 ```
-# If the tf.__version__ is 1.x, please run this cell
-!pip install tensorflow==2.0.0-beta0
-```
-
-
-```
 import tensorflow_datasets as tfds
 import tensorflow as tf
 print(tf.__version__)
-```
-
-
-```
-
 ```
 
 

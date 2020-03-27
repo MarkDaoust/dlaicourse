@@ -53,7 +53,6 @@ print(total_words)
 
 
 ```
-
 input_sequences = []
 for line in corpus:
 	token_list = tokenizer.texts_to_sequences([line])[0]
@@ -395,7 +394,7 @@ def plot_graphs(history, string):
 
 
 ```
-plot_graphs(history, 'acc')
+plot_graphs(history, 'accuracy')
 
 ```
 

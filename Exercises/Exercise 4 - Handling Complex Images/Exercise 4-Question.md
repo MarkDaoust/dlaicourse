@@ -55,9 +55,9 @@ train_generator = train_datagen.flow_from_directory(
 
 
 ```
-# This code block should call model.fit_generator and train for
+# This code block should call model.fit and train for
 # a number of epochs. 
-history = model.fit_generator(
+history = model.fit(
       # Your Code Here)
     
 # Expected output: "Reached 99.9% accuracy so cancelling training!""

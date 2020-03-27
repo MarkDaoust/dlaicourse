@@ -64,7 +64,7 @@ model = Model( pre_trained_model.input, x)
 
 model.compile(optimizer = RMSprop(lr=0.0001), 
               loss = 'binary_crossentropy', 
-              metrics = ['acc'])
+              metrics = ['accuracy'])
 
 ```
 
@@ -128,7 +128,7 @@ validation_generator =  test_datagen.flow_from_directory( validation_dir,
 
 
 ```
-history = model.fit_generator(
+history = model.fit(
             train_generator,
             validation_data = validation_generator,
             steps_per_epoch = 100,
@@ -140,8 +140,8 @@ history = model.fit_generator(
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 

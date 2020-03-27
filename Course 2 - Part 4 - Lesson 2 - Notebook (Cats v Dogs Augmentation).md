@@ -72,7 +72,7 @@ model = tf.keras.models.Sequential([
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=1e-4),
-              metrics=['acc'])
+              metrics=['accuracy'])
 
 # All images will be rescaled by 1./255
 train_datagen = ImageDataGenerator(rescale=1./255)
@@ -93,7 +93,7 @@ validation_generator = test_datagen.flow_from_directory(
         batch_size=20,
         class_mode='binary')
 
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=100,  # 2000 images = batch_size * steps
       epochs=100,
@@ -101,14 +101,13 @@ history = model.fit_generator(
       validation_steps=50,  # 1000 images = batch_size * steps
       verbose=2)
 
-
 ```
 
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
@@ -215,7 +214,7 @@ model = tf.keras.models.Sequential([
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=1e-4),
-              metrics=['acc'])
+              metrics=['accuracy'])
 
 # This code has changed. Now instead of the ImageGenerator just rescaling
 # the image, we also rotate and do other operations
@@ -247,7 +246,7 @@ validation_generator = test_datagen.flow_from_directory(
         batch_size=20,
         class_mode='binary')
 
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=100,  # 2000 images = batch_size * steps
       epochs=100,
@@ -259,8 +258,8 @@ history = model.fit_generator(
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
@@ -338,7 +337,7 @@ model = tf.keras.models.Sequential([
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=1e-4),
-              metrics=['acc'])
+              metrics=['accuracy'])
 
 # This code has changed. Now instead of the ImageGenerator just rescaling
 # the image, we also rotate and do other operations
@@ -370,7 +369,7 @@ validation_generator = test_datagen.flow_from_directory(
         batch_size=20,
         class_mode='binary')
 
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=100,  # 2000 images = batch_size * steps
       epochs=100,
@@ -599,8 +598,8 @@ history = model.fit_generator(
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 

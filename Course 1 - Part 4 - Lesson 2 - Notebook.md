@@ -52,6 +52,8 @@ What does these values look like? Let's print a training image, and a training l
 
 
 ```
+import numpy as np
+np.set_printoptions(linewidth=200)
 import matplotlib.pyplot as plt
 plt.imshow(training_images[0])
 print(training_labels[0])
@@ -94,7 +96,7 @@ The next thing to do, now the model is defined, is to actually build it. You do 
 
 
 ```
-model.compile(optimizer = tf.train.AdamOptimizer(),
+model.compile(optimizer = tf.optimizers.Adam(),
               loss = 'sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
@@ -142,7 +144,6 @@ print(test_labels[0])
 3.   It's the probability that this item is each of the 10 classes
 
 
-
 ####Answer: 
 The correct answer is (3)
 
@@ -158,14 +159,11 @@ For the 7, the probability was .999+, i.e. the neural network is telling us that
 2.   The ankle boot is label 9, and there are 0->9 elements in the list
 
 
-
-
 ####Answer
 The correct answer is (2). Both the list and the labels are 0 based, so the ankle boot having label 9 means that it is the 10th of the 10 classes. The list having the 10th element being the highest value means that the Neural Network has predicted that the item it is classifying is most likely an ankle boot
 
 ##Exercise 2: 
 Let's now look at the layers in your model. Experiment with different values for the dense layer with 512 neurons. What different results do you get for loss, training time etc? Why do you think that's the case? 
-
 
 
 
@@ -313,11 +311,6 @@ print(classifications[0])
 print(test_labels[0])
 ```
 
-
-```
-
-```
-
 #Exercise 6: 
 
 Consider the impact of training for more or less epochs. Why do you think that would be the case? 
@@ -406,7 +399,5 @@ model = tf.keras.models.Sequential([
 ])
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 model.fit(training_images, training_labels, epochs=5, callbacks=[callbacks])
-
-
 
 ```

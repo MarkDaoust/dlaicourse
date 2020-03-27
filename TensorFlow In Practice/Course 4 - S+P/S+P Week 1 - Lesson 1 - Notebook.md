@@ -130,8 +130,3 @@ series[200:] = series2[200:]
 #series += noise(time, 30)
 plot_series(time[:300], series[:300])
 ```
-
-
-```
-
-```

@@ -1,9 +1,4 @@
 ```
-!pip install tensorflow==2.0.0b1
-```
-
-
-```
 import tensorflow as tf
 print(tf.__version__)
 ```
@@ -51,7 +46,7 @@ plot_series(time, series)
 ```
 
 
-![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_4_0.png)
+![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_3_0.png)
 
 
 
@@ -65,7 +60,6 @@ x_valid = series[split_time:]
 window_size = 30
 batch_size = 32
 shuffle_buffer_size = 1000
-
 
 ```
 
@@ -123,8 +117,6 @@ model.compile(loss=tf.keras.losses.Huber(),
               optimizer=optimizer,
               metrics=["mae"])
 history = model.fit(train_set, epochs=100, callbacks=[lr_schedule])
-
-
 
 ```
 
@@ -352,7 +344,7 @@ plt.axis([1e-8, 1e-4, 0, 60])
 
 
 
-![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_9_1.png)
+![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_8_1.png)
 
 
 
@@ -698,7 +690,7 @@ plot_series(time_valid, rnn_forecast)
 ```
 
 
-![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_12_0.png)
+![png](S%2BP%20Week%204%20Exercise%20Answer_files/S%2BP%20Week%204%20Exercise%20Answer_11_0.png)
 
 
 

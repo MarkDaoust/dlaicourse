@@ -67,7 +67,7 @@ print(model.summary())
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
+acc = history.history['accuracy']
 loss = history.history['loss']
 
 epochs = range(len(acc))

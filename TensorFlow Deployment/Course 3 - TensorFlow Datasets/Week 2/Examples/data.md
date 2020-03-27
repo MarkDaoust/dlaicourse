@@ -34,8 +34,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
   </td>
 </table>
 
-
-
 The `tf.data` API enables you to build complex input pipelines from simple,
 reusable pieces. For example, the pipeline for an image model might aggregate
 data from files in a distributed file system, apply random perturbations to each
@@ -58,7 +56,6 @@ There are two distinct ways to create a dataset:
 
 *   A data **transformation** constructs a dataset from one or more
     `tf.data.Dataset` objects.
-
 
 
 
@@ -416,7 +413,6 @@ method that produces the dataset, taking filenames as an input argument:
 
 
 
-
 ```
 dataset = tf.data.TFRecordDataset(filenames = [fsns_test_file])
 dataset
@@ -703,7 +699,6 @@ TODO(mrry): Add this section.
 ## Batching dataset elements
 
 
-
 ### Simple batching
 
 The simplest form of batching stacks `n` consecutive elements of a dataset into
@@ -771,9 +766,7 @@ TODO(mrry): Add this section.
 -->
 
 
-
 ## Training workflows
-
 
 
 ### Processing multiple epochs
@@ -918,7 +911,6 @@ that will represent a single element in the new dataset. Its implementation uses
 standard TensorFlow operations to transform one element into another.
 
 This section covers common examples of how to use `Dataset.map()`.
-
 
 
 ### Decoding image data and resizing it
@@ -1383,7 +1375,6 @@ for features, labels in balanced_ds.take(10):
 ```
 
 ## Using high-level APIs
-
 
 
 ### tf.keras

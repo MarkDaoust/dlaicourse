@@ -107,7 +107,7 @@ model.summary()
 testing = False
 epochs = 5
 
-model.compile(optimizer=tf.train.AdamOptimizer(), 
+model.compile(optimizer=tf.optimizers.Adam(), 
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 model.fit(train_images, train_labels, epochs=epochs)

@@ -122,13 +122,12 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
 
-model.compile(optimizer=RMSprop(lr=0.001), loss='binary_crossentropy', metrics=['acc'])
+model.compile(optimizer=RMSprop(lr=0.001), loss='binary_crossentropy', metrics=['accuracy'])
 
 ```
 
 
 ```
-
 TRAINING_DIR = "/tmp/cats-v-dogs/training/"
 # Experiment with your own parameters here to really try to drive it to 99.9% accuracy or better
 train_datagen = ImageDataGenerator(rescale=1./255,
@@ -167,7 +166,7 @@ validation_generator = validation_datagen.flow_from_directory(VALIDATION_DIR,
 
 ```
 # Note that this may take some time.
-history = model.fit_generator(train_generator,
+history = model.fit(train_generator,
                               epochs=15,
                               verbose=1,
                               validation_data=validation_generator)
@@ -184,8 +183,8 @@ import matplotlib.pyplot as plt
 # Retrieve a list of list results on training and test data
 # sets for each training epoch
 #-----------------------------------------------------------
-acc=history.history['acc']
-val_acc=history.history['val_acc']
+acc=history.history['accuracy']
+val_acc=history.history['val_accuracy']
 loss=history.history['loss']
 val_loss=history.history['val_loss']
 

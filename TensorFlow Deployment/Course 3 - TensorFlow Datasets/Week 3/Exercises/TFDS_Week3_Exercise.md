@@ -56,7 +56,7 @@ def create_model():
     model = tf.keras.models.Model(inputs=input_layer, outputs=x)
     model.compile(optimizer='adam',
                   loss='sparse_categorical_crossentropy',
-                  metrics=['acc'])
+                  metrics=['accuracy'])
     return model
 ```
 
@@ -248,8 +248,3 @@ model.fit(train_dataset, epochs=5)
 ```
 
 Due to the parallelization of the various stages of the ETL processes, you should see a decrease in training time as compared to the naive approach depicted at beginning of the notebook.
-
-
-```
-
-```

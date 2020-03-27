@@ -58,8 +58,3 @@ for data in dataset.take(1):
     plt.imshow(image, cmap=plt.cm.binary)
     plt.show()
 ```
-
-
-```
-
-```

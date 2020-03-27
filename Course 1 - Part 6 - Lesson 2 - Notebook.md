@@ -153,7 +153,6 @@ test_images=test_images/255.0
 ```
 
 
-
 Next is to define your model. Now instead of the input layer at the top, you're going to add a Convolution. The parameters are:
 
 1. The number of convolutions you want to generate. Purely arbitrary, but good to start with something in the order of 32
@@ -173,7 +172,6 @@ model = tf.keras.models.Sequential([
 ```
 
 
-
 Add another convolution
 
 
@@ -184,13 +182,11 @@ Add another convolution
 ```
 
 
-
 Now flatten the output. After this you'll just have the same DNN structure as the non convolutional version
 
 ```
   tf.keras.layers.Flatten(),
 ```
-
 
 
 The same 128 dense layers, and 10 output layers as in the pre-convolution example:
@@ -204,7 +200,6 @@ The same 128 dense layers, and 10 output layers as in the pre-convolution exampl
 ```
 
 
-
 Now compile the model, call the fit method to do the training, and evaluate the loss and accuracy from the test set.
 
 
@@ -215,8 +210,6 @@ model.fit(training_images, training_labels, epochs=5)
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print(test_acc)
 ```
-
-
 
 
 # Visualizing the Convolutions and Pooling

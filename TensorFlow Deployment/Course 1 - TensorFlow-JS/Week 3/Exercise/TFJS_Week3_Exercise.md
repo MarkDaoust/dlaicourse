@@ -204,7 +204,7 @@ from tensorflow.keras.optimizers import RMSprop
 
 model.compile(optimizer=RMSprop(lr=0.001),
               loss='binary_crossentropy',
-              metrics = ['acc'])
+              metrics = ['accuracy'])
 ```
 
 ### Data Preprocessing
@@ -213,7 +213,7 @@ Let's set up data generators that will read pictures in our source folders, conv
 
 As you may already know, data that goes into neural networks should usually be normalized in some way to make it more amenable to processing by the network. (It is uncommon to feed raw pixels into a convnet.) In our case, we will preprocess our images by normalizing the pixel values to be in the `[0, 1]` range (originally all values are in the `[0, 255]` range).
 
-In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit_generator`, `evaluate_generator`, and `predict_generator`.
+In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit`, `evaluate_generator`, and `predict_generator`.
 
 
 ```
@@ -251,7 +251,7 @@ The Loss and Accuracy are a great indication of progress of training. It's makin
 
 
 ```
-history = model.fit_generator(train_generator,
+history = model.fit(train_generator,
                               validation_data=validation_generator,
                               steps_per_epoch=100,
                               epochs=15,
@@ -269,8 +269,8 @@ Let's plot the training/validation accuracy and loss as collected during trainin
 # Retrieve a list of list results on training and test data
 # sets for each training epoch
 #-----------------------------------------------------------
-acc      = history.history[     'acc' ]
-val_acc  = history.history[ 'val_acc' ]
+acc      = history.history[     'accuracy' ]
+val_acc  = history.history[ 'val_accuracy' ]
 loss     = history.history[    'loss' ]
 val_loss = history.history['val_loss' ]
 
@@ -333,8 +333,3 @@ In the cell below, use the `tensorflowjs_converter` to convert the saved Keras m
 ```
 
 If you did things correctly, you should now have a **JSON** file named `model.json` and various `.bin` files, such as `group1-shard1of10.bin`. The number of `.bin` files will depend on the size of your model: the larger your model, the greater the number of `.bin` files. The `model.json` file contains the architecture of your model and the `.bin` files will contain the weights of your model.
-
-
-```
-
-```

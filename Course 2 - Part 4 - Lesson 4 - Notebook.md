@@ -101,7 +101,7 @@ from tensorflow.keras.optimizers import RMSprop
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=1e-4),
-              metrics=['acc'])
+              metrics=['accuracy'])
 ```
 
 
@@ -140,7 +140,7 @@ validation_generator = validation_datagen.flow_from_directory(
 
 
 ```
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=8,  
       epochs=100,
@@ -152,8 +152,8 @@ history = model.fit_generator(
 
 ```
 import matplotlib.pyplot as plt
-acc = history.history['acc']
-val_acc = history.history['val_acc']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 

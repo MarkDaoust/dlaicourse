@@ -1,9 +1,4 @@
 ```
-!pip install tensorflow==2.0.0b1
-```
-
-
-```
 import tensorflow as tf
 print(tf.__version__)
 ```
@@ -62,7 +57,7 @@ plot_series(time, series)
 ```
 
 
-![png](S%2BP%20Week%204%20Lesson%203_files/S%2BP%20Week%204%20Lesson%203_4_0.png)
+![png](S%2BP%20Week%204%20Lesson%203_files/S%2BP%20Week%204%20Lesson%203_3_0.png)
 
 
 
@@ -76,7 +71,6 @@ x_valid = series[split_time:]
 window_size = 60
 batch_size = 32
 shuffle_buffer_size = 1000
-
 
 ```
 
@@ -104,8 +98,6 @@ model = tf.keras.models.Sequential([
 model.compile(loss="mse", optimizer=tf.keras.optimizers.SGD(lr=1e-7, momentum=0.9))
 model.fit(dataset,epochs=100,verbose=0)
 
-
-
 ```
 
 
@@ -132,7 +124,7 @@ plot_series(time_valid, results)
 ```
 
 
-![png](S%2BP%20Week%204%20Lesson%203_files/S%2BP%20Week%204%20Lesson%203_8_0.png)
+![png](S%2BP%20Week%204%20Lesson%203_files/S%2BP%20Week%204%20Lesson%203_7_0.png)
 
 
 

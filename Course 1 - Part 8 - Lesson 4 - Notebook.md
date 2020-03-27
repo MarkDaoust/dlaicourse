@@ -64,10 +64,19 @@ train_horse_dir = os.path.join('/tmp/horse-or-human/horses')
 train_human_dir = os.path.join('/tmp/horse-or-human/humans')
 
 # Directory with our training horse pictures
-validation_horse_dir = os.path.join('/tmp/validation-horse-or-human/validation-horses')
+validation_horse_dir = os.path.join('/tmp/validation-horse-or-human/horses')
 
 # Directory with our training human pictures
-validation_human_dir = os.path.join('/tmp/validation-horse-or-human/validation-humans')
+validation_human_dir = os.path.join('/tmp/validation-horse-or-human/humans')
+```
+
+
+```
+train_horse_names = os.listdir(train_horse_dir)
+train_human_names = os.listdir(train_human_dir)
+
+validation_horse_hames = os.listdir(validation_horse_dir)
+validation_human_names = os.listdir(validation_human_dir)
 ```
 
 ## Building a Small Model from Scratch
@@ -134,7 +143,7 @@ from tensorflow.keras.optimizers import RMSprop
 
 model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=0.001),
-              metrics=['acc'])
+              metrics=['accuracy'])
 ```
 
 ### Data Preprocessing
@@ -143,7 +152,7 @@ Let's set up data generators that will read pictures in our source folders, conv
 
 As you may already know, data that goes into neural networks should usually be normalized in some way to make it more amenable to processing by the network. (It is uncommon to feed raw pixels into a convnet.) In our case, we will preprocess our images by normalizing the pixel values to be in the `[0, 1]` range (originally all values are in the `[0, 255]` range).
 
-In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit_generator`, `evaluate_generator`, and `predict_generator`.
+In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit`, `evaluate_generator`, and `predict_generator`.
 
 
 ```
@@ -179,7 +188,7 @@ The Loss and Accuracy are a great indication of progress of training. It's makin
 
 
 ```
-history = model.fit_generator(
+history = model.fit(
       train_generator,
       steps_per_epoch=8,  
       epochs=15,
@@ -188,7 +197,7 @@ history = model.fit_generator(
       validation_steps=8)
 ```
 
-###Running the Model
+### Running the Model
 
 Let's now take a look at actually running a prediction using the model. This code will allow you to choose 1 or more files from your file system, it will then upload them, and run them through the model, giving an indication of whether the object is a horse or a human.
 
@@ -226,6 +235,7 @@ Let's pick a random image from the training set, and then generate a figure wher
 
 
 ```
+import matplotlib.pyplot as plt
 import numpy as np
 import random
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
@@ -241,7 +251,7 @@ horse_img_files = [os.path.join(train_horse_dir, f) for f in train_horse_names]
 human_img_files = [os.path.join(train_human_dir, f) for f in train_human_names]
 img_path = random.choice(horse_img_files + human_img_files)
 
-img = load_img(img_path, target_size=(300, 300))  # this is a PIL image
+img = load_img(img_path, target_size=(150, 150))  # this is a PIL image
 x = img_to_array(img)  # Numpy array with shape (150, 150, 3)
 x = x.reshape((1,) + x.shape)  # Numpy array with shape (1, 150, 150, 3)
 

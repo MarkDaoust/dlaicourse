@@ -218,8 +218,6 @@ plot_graphs(history, "loss")
 
 
 ```
-
-
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
 def decode_sentence(text):

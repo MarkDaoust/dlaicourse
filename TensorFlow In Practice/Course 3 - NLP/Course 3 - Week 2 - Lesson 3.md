@@ -8,12 +8,6 @@ print(tf.__version__)
 
 
 ```
-# Uncomment and run this if you don't have TensorFlow 2.0x [Check for latest 2.0 instructions at https://www.tensorflow.org/versions/r2.0/api_docs/python/tf]
-#!pip install tensorflow==2.0.0-beta0
-```
-
-
-```
 # Double check TF 2.0x is installed. If you ran the above block, there was a 
 # 'reset all runtimes' button at the bottom that you needed to press
 import tensorflow as tf

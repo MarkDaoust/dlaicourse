@@ -37,5 +37,4 @@ print(model.predict([10.0]))
 
 print("Layer variables look like this: {}".format(layer_0.get_weights()))
 
-
 ```

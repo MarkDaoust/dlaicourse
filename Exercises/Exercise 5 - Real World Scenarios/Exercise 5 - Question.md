@@ -116,7 +116,7 @@ model = tf.keras.models.Sequential([
 # YOUR CODE HERE
 ])
 
-model.compile(optimizer=RMSprop(lr=0.001), loss='binary_crossentropy', metrics=['acc'])
+model.compile(optimizer=RMSprop(lr=0.001), loss='binary_crossentropy', metrics=['accuracy'])
 ```
 
 
@@ -138,7 +138,7 @@ validation_generator = #YOUR CODE HERE
 
 
 ```
-history = model.fit_generator(train_generator,
+history = model.fit(train_generator,
                               epochs=15,
                               verbose=1,
                               validation_data=validation_generator)
@@ -159,8 +159,8 @@ import matplotlib.pyplot as plt
 # Retrieve a list of list results on training and test data
 # sets for each training epoch
 #-----------------------------------------------------------
-acc=history.history['acc']
-val_acc=history.history['val_acc']
+acc=history.history['accuracy']
+val_acc=history.history['val_accuracy']
 loss=history.history['loss']
 val_loss=history.history['val_loss']
 

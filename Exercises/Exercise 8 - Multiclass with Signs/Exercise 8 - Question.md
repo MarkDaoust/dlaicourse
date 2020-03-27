@@ -95,7 +95,7 @@ model = tf.keras.models.Sequential([
 model.compile(# Your Code Here)
 
 # Train the Model
-history = model.fit_generator(# Your Code Here)
+history = model.fit(# Your Code Here)
 
 model.evaluate(testing_images, testing_labels)
     
