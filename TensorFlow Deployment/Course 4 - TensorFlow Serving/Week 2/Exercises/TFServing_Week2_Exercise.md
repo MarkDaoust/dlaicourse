@@ -21,7 +21,7 @@ In this exercise, we will learn on how to create models for TensorFlow Hub. You 
 </table>
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -29,7 +29,7 @@ except:
 ```
 
 
-```python
+```
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
@@ -73,14 +73,14 @@ In the cell below, fill in the missing code and create the following Keras `Sequ
 
 Notice that we are using a ` tf.keras.layers.Lambda` layer at the beginning of our model. `Lambda` layers are used to wrap arbitrary expressions as a `Layer` object:
 
-```python
+```
 tf.keras.layers.Lambda(expression)
 ```
 
 The `Lambda` layer exists so that arbitrary TensorFlow functions can be used when constructing `Sequential` and Functional API models. `Lambda` layers are best suited for simple operations. 
 
 
-```python
+```
 class MNIST:
     def __init__(self, export_path, buffer_size=1000, batch_size=32,
                  learning_rate=1e-3, epochs=10):
@@ -195,7 +195,7 @@ We will now use the `MNIST` class we created above to create an `mnist` object. 
 **NOTE:** It will take about 12 minutes to train the model for 5 epochs.
 
 
-```python
+```
 # Define the training parameters.
 args = {'export_path': './saved_model',
         'buffer_size': 1000,
@@ -222,7 +222,7 @@ mnist.test()
 The `export_model` method saved our model in the TensorFlow SavedModel format in the `./saved_model` directory. The SavedModel format saves our model and its weights in various files and directories. This makes it difficult to distribute our model. Therefore, it is convenient to create a single compressed file that contains all the files and folders of our model. To do this, we will use the `tar` archiving program to create a tarball (similar to a Zip file) that contains our SavedModel.
 
 
-```python
+```
 # Create a tarball from the SavedModel.
 !tar -cz -f module.tar.gz -C ./saved_model .
 ```
@@ -232,7 +232,7 @@ The `export_model` method saved our model in the TensorFlow SavedModel format in
 We can uncompress our tarball to make sure it has all the files and folders from our SavedModel.
 
 
-```python
+```
 # Inspect the tarball.
 !tar -tf module.tar.gz
 ```
@@ -242,14 +242,14 @@ We can uncompress our tarball to make sure it has all the files and folders from
 Once we have verified our tarball, we can now simulate server conditions. In a normal scenario, we will fetch our TF Hub module from a remote server using the module's handle. However, since this notebook cannot host the server, we will instead point the module handle to the directory where our SavedModel is stored. 
 
 
-```python
+```
 !rm -rf ./module
 !mkdir -p module
 !tar xvzf module.tar.gz -C ./module
 ```
 
 
-```python
+```
 # Define the module handle.
 MODULE_HANDLE = './module'
 ```
@@ -257,7 +257,7 @@ MODULE_HANDLE = './module'
 ## Load the TF Hub Module
 
 
-```python
+```
 # EXERCISE: Load the TF Hub module using the hub.load API.
 model = # YOUR CODE HERE
 ```
@@ -267,7 +267,7 @@ model = # YOUR CODE HERE
 We will now test our TF Hub module with images from the `test` split of the MNIST dataset.
 
 
-```python
+```
 # EXERCISE: Load the MNIST 'test' split using tfds.load(). You
 # should load the images along with their corresponding labels.
 
@@ -278,7 +278,7 @@ test_dataset = # YOUR CODE HERE
 ```
 
 
-```python
+```
 # Test the TF Hub module for a single batch of data
 for batch_data in test_dataset.take(1):
     outputs = model(batch_data[0])
@@ -294,7 +294,7 @@ We can see that the model correctly predicts the labels for most images in the b
 In the cell below, you will integrate the TensorFlow Hub module into the high level Keras API.
 
 
-```python
+```
 # EXERCISE: Integrate the TensorFlow Hub module into a Keras
 # sequential model. You should use a hub.KerasLayer and you 
 # should make sure to use the correct values for the output_shape,
@@ -310,13 +310,13 @@ model.compile(optimizer='adam',
 ```
 
 
-```python
+```
 # Evaluate the model on the test_dataset.
 results = model.evaluate(test_dataset)
 ```
 
 
-```python
+```
 # Print the metric values on which the model is being evaluated on.
 for name, value in zip(model.metrics_names, results):
     print("%s: %.3f" % (name, value))

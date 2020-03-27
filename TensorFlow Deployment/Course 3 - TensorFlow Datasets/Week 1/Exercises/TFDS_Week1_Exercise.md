@@ -18,7 +18,7 @@ In this week's exercise you will be working with TFDS and the rock-paper-scissor
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -26,7 +26,7 @@ except:
 ```
 
 
-```python
+```
 # Use all imports
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -39,7 +39,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 In the cell below, you will extract the `rock_paper_scissors` dataset and then print its info. Take note of the splits, what they're called, and their size.
 
 
-```python
+```
 # EXERCISE: Use tfds.load to extract the rock_paper_scissors dataset.
 
 data, info = # YOUR CODE HERE
@@ -47,7 +47,7 @@ print(info)
 ```
 
 
-```python
+```
 # EXERCISE: In the space below, write code that iterates through the splits
 # without hardcoding any keys. The code should extract 'test' and 'train' as
 # the keys, and then print out the number of items in the dataset for each key. 
@@ -66,7 +66,7 @@ for # YOUR CODE HERE:
 Before using the new S3 API, you must first find out whether the `rock_paper_scissors` dataset implements the new S3 API. In the cell below you should use version `3.*.*` of the `rock_paper_scissors` dataset.
 
 
-```python
+```
 # EXERCISE: In the space below, use the tfds.builder to fetch the
 # rock_paper_scissors dataset and check to see if it supports the
 # new S3 API. 
@@ -85,7 +85,7 @@ print(# YOUR CODE HERE)
 Sometimes datasets are too big for prototyping. In the cell below, you will create a smaller dataset, where instead of using all of the training data and all of the test data, you instead have a `small_train` and `small_test` each of which are comprised of the first 10% of the records in their respective datasets.
 
 
-```python
+```
 # EXERCISE: In the space below, create two small datasets, `small_train`
 # and `small_test`, each of which are comprised of the first 10% of the
 # records in their respective datasets.
@@ -97,7 +97,7 @@ small_test = # YOUR CODE HERE (Include the following arguments in your code: "ro
 ```
 
 
-```python
+```
 # EXERCISE: Print out the size (length) of the small versions of the datasets.
 
 print(# YOUR CODE HERE)
@@ -119,7 +119,7 @@ The original dataset doesn't have a validation set, just training and testing se
 * `validation`: The new validation set should be the last 10% of the original training set + the last 10% of the original test set.
 
 
-```python
+```
 # EXERCISE: In the space below, create 3 new datasets according to
 # the rules indicated above.
 

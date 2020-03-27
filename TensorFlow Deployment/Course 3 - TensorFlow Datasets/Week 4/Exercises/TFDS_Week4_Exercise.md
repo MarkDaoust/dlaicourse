@@ -16,7 +16,7 @@
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -24,7 +24,7 @@ except:
 ```
 
 
-```python
+```
 import os
 import textwrap
 import scipy.io
@@ -56,7 +56,7 @@ The IMDb Faces dataset provides a separate .mat file which can be loaded with Ma
 Here you can download the raw images and the metadata. We also provide a version with the cropped faces (with 40% margin). This version is much smaller.
 
 
-```python
+```
 # Download and extract the IMDB Faces dataset
 !wget https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/static/imdb_crop.tar
 !tar xf imdb_crop.tar
@@ -67,7 +67,7 @@ Next, let's inspect the dataset
 ## Exploring the Data
 
 
-```python
+```
 # Inspect the directory structure
 files = os.listdir('imdb_crop')
 print(textwrap.fill(' '.join(sorted(files)), 80))
@@ -76,13 +76,13 @@ print(textwrap.fill(' '.join(sorted(files)), 80))
 **NOTE:** In the code below we have set `/content/` as the path to the `/imdb_crop/imdb.mat` file. This will work in Google's Colab environment without any modifications. However, if you are running this notebook locally, you should change `/content/` to the appropriate path to the `/imdb_crop/imdb.mat` file on your computer.
 
 
-```python
+```
 # Inspect the meta data
 meta = scipy.io.loadmat('/content/imdb_crop/imdb.mat')
 ```
 
 
-```python
+```
 meta
 ```
 
@@ -91,18 +91,18 @@ meta
 Let's clear up the clutter by going to the metadata's most useful key (imdb) and start exploring all the other keys inside it
 
 
-```python
+```
 root = meta['imdb'][0, 0]
 ```
 
 
-```python
+```
 desc = root.dtype.descr
 desc
 ```
 
 
-```python
+```
 # EXERCISE: Fill in the missing code below.
 
 full_path = root["full_path"][0]
@@ -131,20 +131,20 @@ print('Filepaths: {}\n\n'
 ```
 
 
-```python
+```
 print('Celeb names: {}\n\n'.format(celeb_names))
 ```
 
 Display all the distinct keys and their corresponding values
 
 
-```python
+```
 names = [x[0] for x in desc]
 names
 ```
 
 
-```python
+```
 values = {key: root[key][0] for key in names}
 values
 ```
@@ -154,7 +154,7 @@ values
 Pop out the celeb names as they are not relevant for creating the records.
 
 
-```python
+```
 del values['celeb_names']
 names.pop(names.index('celeb_names'))
 ```
@@ -162,7 +162,7 @@ names.pop(names.index('celeb_names'))
 Let's see how many values are present in each key
 
 
-```python
+```
 for key, value in values.items():
     print(key, len(value))
 ```
@@ -172,7 +172,7 @@ for key, value in values.items():
 Now, let's try examining one example from the dataset. To do this, let's load all the attributes that we've extracted just now into a Pandas dataframe
 
 
-```python
+```
 df = pd.DataFrame(values, columns=names)
 df.head()
 ```
@@ -180,7 +180,7 @@ df.head()
 The Pandas dataframe may contain some Null values or nan. We will have to filter them later on.
 
 
-```python
+```
 df.isna().sum()
 ```
 
@@ -202,7 +202,7 @@ The first time a dataset is used, the dataset is downloaded, prepared, and writt
 The next step will be to clone the GitHub TFDS Repository. For this particular notebook, we will clone a particular version of the repository. You can clone the repository by running the following command:
 
 
-```python
+```
 !git clone https://github.com/tensorflow/datasets.git -b v1.2.0
 ```
 
@@ -211,7 +211,7 @@ Next, we set the current working directory to `/content/datasets`.
 **NOTE:** Here we have set `/content/` as the path to the `/datasets/` directory. This will work in Google's Colab environment without any modifications. However, if you are running this notebook locally, you should change `/content/` to the appropriate path to the `/datasets/` directory on your computer.
 
 
-```python
+```
 cd /content/datasets
 ```
 
@@ -223,7 +223,7 @@ Now we will use IPython's `%%writefile` in-built magic command to write whatever
 Let's see an example:
 
 
-```python
+```
 %%writefile something.py
 x = 10
 ```
@@ -231,7 +231,7 @@ x = 10
 Now that the file has been written, let's inspect its contents.
 
 
-```python
+```
 !cat something.py
 ```
 
@@ -252,7 +252,7 @@ In this exercise, you will use the `GeneratorBasedBuilder`.
 ### EXERCISE: Fill in the missing code below.
 
 
-```python
+```
 %%writefile tensorflow_datasets/image/imdb_faces.py
 
 # coding=utf-8
@@ -457,7 +457,7 @@ All subclasses of `tfds.core.DatasetBuilder` are automatically registered when t
 If you're contributing the dataset to `tensorflow/datasets`, you must add the module import to its subdirectory's `__init__.py` (e.g. `image/__init__.py`), as shown below:
 
 
-```python
+```
 %%writefile tensorflow_datasets/image/__init__.py
 # coding=utf-8
 # Copyright 2019 The TensorFlow Datasets Authors.
@@ -549,14 +549,14 @@ from tensorflow_datasets.image.voc import Voc2007
 If you're contributing the dataset to `tensorflow/datasets`, add a checksums file for the dataset. On first download, the DownloadManager will automatically add the sizes and checksums for all downloaded URLs to that file. This ensures that on subsequent data generation, the downloaded files are as expected.
 
 
-```python
+```
 !touch tensorflow_datasets/url_checksums/imdb_faces.txt
 ```
 
 ## Build the Dataset
 
 
-```python
+```
 # EXERCISE: Fill in the name of your dataset.
 # The name must be a string.
 DATASET_NAME = # YOUR CODE HERE
@@ -577,7 +577,7 @@ python -m tensorflow_datasets.scripts.download_and_prepare \
 
 Once the dataset is built you can load it in the usual way, by using `tfds.load`, as shown below:
 
-```python
+```
 import tensorflow_datasets as tfds
 dataset, info = tfds.load('imdb_faces', with_info=True)
 ```
@@ -588,7 +588,7 @@ dataset, info = tfds.load('imdb_faces', with_info=True)
 
 Once the dataset is loaded, you can explore it by using the following loop:
 
-```python
+```
 for feature in tfds.as_numpy(dataset['train']):
   for key, value in feature.items():
     if key == 'image':
@@ -601,7 +601,7 @@ for feature in tfds.as_numpy(dataset['train']):
 
 The expected output from the code block shown above should be:
 
-```python
+```
 >>>
 celeb_id 12387
 dob 722957

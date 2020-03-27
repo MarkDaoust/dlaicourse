@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -35,7 +35,7 @@ In this notebook we will classify movie reviews as being either `positive` or `n
 # Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -43,7 +43,7 @@ except:
 ```
 
 
-```python
+```
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_datasets as tfds
@@ -57,7 +57,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 We will download the [IMDB dataset](https://www.tensorflow.org/datasets/catalog/imdb_reviews) using TensorFlow Datasets. We will use a training set, a validation set, and a test set. Since the IMDB dataset doesn't have a validation split, we will use the first 60\% of the training set for training, and the last 40\% of the training set for validation.
 
 
-```python
+```
 splits = ['train[:60%]', 'train[-40%:]', 'test']
 
 splits, info = tfds.load(name="imdb_reviews", with_info=True, split=splits, as_supervised=True)
@@ -70,7 +70,7 @@ train_data, validation_data, test_data = splits
 Let's take a moment to look at the data.
 
 
-```python
+```
 num_train_examples = info.splits['train'].num_examples
 num_test_examples = info.splits['test'].num_examples
 num_classes = info.features['label'].num_classes
@@ -85,14 +85,14 @@ print('\u2022 {:,} movie reviews for testing'.format(num_test_examples))
 The labels are either 0 or 1, where 0 is a negative review, and 1 is a positive review. We will create a list with the corresponding class names, so that we can map labels to class names later on.
 
 
-```python
+```
 class_names = ['negative', 'positive']
 ```
 
 Each example consists of a sentence representing the movie review and a corresponding label. The sentence is not preprocessed in any way. Let's take a look at the first example of the training set.  
 
 
-```python
+```
 for review, label in train_data.take(1):
     review = review.numpy()
     label = label.numpy()
@@ -113,7 +113,7 @@ One way to represent the text is to convert sentences into word embeddings. Word
 For this example we will use a model from [TensorFlow Hub](https://tfhub.dev/) called [google/tf2-preview/gnews-swivel-20dim/1](https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim/1). We'll create a `hub.KerasLayer` that uses the TensorFlow Hub model to embed the sentences. We can choose to fine-tune the TF hub module weights during training by setting the `trainable` parameter to `True`.
 
 
-```python
+```
 embedding = "https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim/1"
 
 hub_layer = hub.KerasLayer(embedding, input_shape=[], dtype=tf.string, trainable=True)
@@ -122,7 +122,7 @@ hub_layer = hub.KerasLayer(embedding, input_shape=[], dtype=tf.string, trainable
 ## Build Pipeline
 
 
-```python
+```
 batch_size = 512
 
 train_batches = train_data.shuffle(num_train_examples // 4).batch(batch_size).prefetch(1)
@@ -143,7 +143,7 @@ In the code below we will build a Keras `Sequential` model with the following la
 3. The last layer is densely connected with a single output node. Using the `sigmoid` activation function, this value is a float between 0 and 1, representing a probability, or confidence level.
 
 
-```python
+```
 model = tf.keras.Sequential([
         hub_layer,
         tf.keras.layers.Dense(16, activation='relu'),
@@ -155,7 +155,7 @@ model = tf.keras.Sequential([
 Since this is a binary classification problem and the model outputs a probability (a single-unit layer with a sigmoid activation), we'll use the `binary_crossentropy` loss function. 
 
 
-```python
+```
 model.compile(optimizer='adam',
               loss='binary_crossentropy',
               metrics=['accuracy'])
@@ -170,7 +170,7 @@ history = model.fit(train_batches,
 We will now see how well our model performs on the testing set.
 
 
-```python
+```
 eval_results = model.evaluate(test_batches, verbose=0)
 
 for metric, value in zip(model.metrics_names, eval_results):

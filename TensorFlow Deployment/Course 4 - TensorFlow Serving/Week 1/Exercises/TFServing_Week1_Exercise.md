@@ -20,7 +20,7 @@ In this notebook, you will train a neural network to classify images of handwrit
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -28,7 +28,7 @@ except:
 ```
 
 
-```python
+```
 import os
 import json
 import tempfile
@@ -48,13 +48,13 @@ The [MNIST](http://yann.lecun.com/exdb/mnist/) dataset contains 70,000 grayscale
 Even though these are really images, we will load them as NumPy arrays and not as binary image objects.
 
 
-```python
+```
 mnist = tf.keras.datasets.mnist
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 ```
 
 
-```python
+```
 # EXERCISE: Scale the values of the arrays below to be between 0.0 and 1.0.
 train_images = # YOUR CODE HERE
 test_images = # YOUR CODE HERE
@@ -62,20 +62,20 @@ test_images = # YOUR CODE HERE
 
 In the cell below use the `.reshape` method to resize the arrays to the following sizes:
 
-```python
+```
 train_images.shape: (60000, 28, 28, 1)
 test_images.shape: (10000, 28, 28, 1)
 ```
 
 
-```python
+```
 # EXERCISE: Reshape the arrays below.
 train_images = # YOUR CODE HERE
 test_images = # YOUR CODE HERE
 ```
 
 
-```python
+```
 print('\ntrain_images.shape: {}, of {}'.format(train_images.shape, train_images.dtype))
 print('test_images.shape: {}, of {}'.format(test_images.shape, test_images.dtype))
 ```
@@ -83,7 +83,7 @@ print('test_images.shape: {}, of {}'.format(test_images.shape, test_images.dtype
 ## Look at a Sample Image
 
 
-```python
+```
 idx = 42
 
 plt.imshow(test_images[idx].reshape(28,28), cmap=plt.cm.binary)
@@ -96,7 +96,7 @@ plt.show()
 In the cell below build a `tf.keras.Sequential` model that can be used to classify the images of the MNIST dataset. Feel free to use the simplest possible CNN. Make sure your model has the correct `input_shape` and the correct number of output units.
 
 
-```python
+```
 # EXERCISE: Create a model.
 model = # YOUR CODE HERE
 
@@ -108,7 +108,7 @@ model.summary()
 In the cell below configure your model for training using the `adam` optimizer, `sparse_categorical_crossentropy` as the loss, and `accuracy` for your metrics. Then train the model for the given number of epochs, using the `train_images` array.
 
 
-```python
+```
 # EXERCISE: Configure the model for training.
 model.compile(# YOUR CODE HERE)
 
@@ -121,7 +121,7 @@ history = model.fit(# YOUR CODE HERE)
 ## Evaluate the Model
 
 
-```python
+```
 # EXERCISE: Evaluate the model on the test images.
 results_eval = # YOUR CODE HERE
 
@@ -132,7 +132,7 @@ for metric, value in zip(model.metrics_names, results_eval):
 ## Save the Model
 
 
-```python
+```
 MODEL_DIR = tempfile.gettempdir()
 
 version = 1
@@ -152,14 +152,14 @@ print('\nexport_path = {}'.format(export_path))
 ## Examine Your Saved Model
 
 
-```python
+```
 !saved_model_cli show --dir {export_path} --all
 ```
 
 ## Add TensorFlow Serving Distribution URI as a Package Source
 
 
-```python
+```
 # This is the same as you would do from your command line, but without the [arch=amd64], and no sudo
 # You would instead do:
 # echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list && \
@@ -173,7 +173,7 @@ curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.re
 ## Install TensorFlow Serving
 
 
-```python
+```
 !apt-get install tensorflow-model-server
 ```
 
@@ -190,12 +190,12 @@ You will now launch the TensorFlow model server with a bash script. In the cell 
 * `model_base_path`: Use the environment variable `MODEL_DIR` defined below as the base path to the saved model.
 
 
-```python
+```
 os.environ["MODEL_DIR"] = MODEL_DIR
 ```
 
 
-```python
+```
 # EXERCISE: Fill in the missing code below.
 %%bash --bg 
 nohup tensorflow_model_server \
@@ -205,7 +205,7 @@ nohup tensorflow_model_server \
 ```
 
 
-```python
+```
 !tail server.log
 ```
 
@@ -214,7 +214,7 @@ nohup tensorflow_model_server \
 In the cell below construct a JSON object and use the first three images of the testing set (`test_images`) as your data.
 
 
-```python
+```
 # EXERCISE: Create JSON Object
 data = # YOUR CODE HERE
 ```
@@ -224,7 +224,7 @@ data = # YOUR CODE HERE
 In the cell below, send a predict request as a POST to the server's REST endpoint, and pass it your test data. You should ask the server to give you the latest version of your model.
 
 
-```python
+```
 # EXERCISE: Fill in the code below
 headers = # YOUR CODE HERE
 json_response = # YOUR CODE HERE
@@ -235,7 +235,7 @@ predictions = json.loads(json_response.text)['predictions']
 ## Plot Predictions
 
 
-```python
+```
 plt.figure(figsize=(10,15))
 
 for i in range(3):

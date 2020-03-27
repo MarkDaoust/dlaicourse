@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -39,7 +39,7 @@ In this tutorial, you will use learn how to use the Image Summary API to visuali
 ## Setup
 
 
-```python
+```
 try:
   # %tensorflow_version only exists in Colab.
   %tensorflow_version 2.x
@@ -51,7 +51,7 @@ except Exception:
 ```
 
 
-```python
+```
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -81,7 +81,7 @@ You're going to construct a simple neural network to classify images in the the 
 First, download the data:
 
 
-```python
+```
 # Download the data. The data is already divided into train and test.
 # The labels are integers representing classes.
 fashion_mnist = keras.datasets.fashion_mnist
@@ -100,7 +100,7 @@ To understand how the Image Summary API works, you're now going to simply log th
 Before you do that, examine the shape of your training data:
 
 
-```python
+```
 print("Shape: ", train_images[0].shape)
 print("Label: ", train_labels[0], "->", class_names[train_labels[0]])
 ```
@@ -112,7 +112,7 @@ However, ```tf.summary.image()``` expects a rank-4 tensor containing ```(batch_s
 You're logging only one image, so ```batch_size``` is 1. The images are grayscale, so set ```channels``` to 1.
 
 
-```python
+```
 # Reshape the image for the Summary API.
 img = np.reshape(train_images[0], (-1, 28, 28, 1))
 ```
@@ -120,7 +120,7 @@ img = np.reshape(train_images[0], (-1, 28, 28, 1))
 You're now ready to log this image and view it in TensorBoard.
 
 
-```python
+```
 # Clear out any prior log data.
 !rm -rf logs
 
@@ -137,7 +137,7 @@ with file_writer.as_default():
 Now, use TensorBoard to examine the image. Wait a few seconds for the UI to spin up.
 
 
-```python
+```
 %tensorboard --logdir logs/train_data
 ```
 
@@ -156,7 +156,7 @@ Logging one tensor is great, but what if you wanted to log multiple training exa
 Simply specify the number of images you want to log when passing data to ```tf.summary.image()```.
 
 
-```python
+```
 with file_writer.as_default():
   # Don't forget to reshape.
   images = np.reshape(train_images[0:25], (-1, 28, 28, 1))
@@ -176,7 +176,7 @@ You need some boilerplate code to convert the plot to a tensor, but after that, 
 In the code below, you'll log the first 25 images as a nice grid using matplotlib's ```subplot()``` function. You'll then view the grid in TensorBoard:
 
 
-```python
+```
 # Clear out prior logging data.
 !rm -rf logs/plots
 
@@ -233,7 +233,7 @@ You're going to use image summaries to understand how well your model is doing w
 First, create a very simple model and compile it, setting up the optimizer and loss function. The compile step also specifies that you want to log the accuracy of the classifier along the way.
 
 
-```python
+```
 model = keras.models.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),
     keras.layers.Dense(32, activation='relu'),
@@ -252,7 +252,7 @@ When training a classifier, it's useful to see the [confusion matrix](https://en
 Define a function that calculates the confusion matrix. You'll use a convenient [Scikit-learn](https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html) function to do this, and then plot it using matplotlib.
 
 
-```python
+```
 def plot_confusion_matrix(cm, class_names):
   """
   Returns a matplotlib figure containing the plotted confusion matrix.
@@ -295,7 +295,7 @@ Here's what you'll do:
 As training progresses, scroll down to see TensorBoard start up.
 
 
-```python
+```
 # Clear out prior logging data.
 !rm -rf logs/image
 
@@ -306,7 +306,7 @@ file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
 ```
 
 
-```python
+```
 def log_confusion_matrix(epoch, logs):
   # Use the model to predict the values from the validation dataset.
   test_pred_raw = model.predict(test_images)
@@ -327,7 +327,7 @@ cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
 ```
 
 
-```python
+```
 # Start TensorBoard.
 %tensorboard --logdir logs/image
 

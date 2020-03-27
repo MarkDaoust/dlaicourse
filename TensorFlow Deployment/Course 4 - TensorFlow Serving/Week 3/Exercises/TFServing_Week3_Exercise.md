@@ -18,7 +18,7 @@ In this week's exercise you will train a convolutional neural network to classif
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -26,13 +26,13 @@ except:
 ```
 
 
-```python
+```
 # Load the TensorBoard notebook extension.
 %load_ext tensorboard
 ```
 
 
-```python
+```
 import io
 import itertools
 import numpy as np
@@ -54,7 +54,7 @@ We are going to use a CNN to classify images in the the [Fashion-MNIST](https://
 First, we load the data. Even though these are really images, we will load them as NumPy arrays and not as binary image objects. The data is already divided into training and testing sets.
 
 
-```python
+```
 # Download the data.
 fashion_mnist = keras.datasets.fashion_mnist
 
@@ -71,7 +71,7 @@ class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
 `train_images` is a NumPy array with shape `(60000, 28, 28)` and `test_images` is a NumPy array with shape `(10000, 28, 28)`. However, our model expects arrays with shape `(batch_size, height, width, channels)` . Therefore, we must reshape our NumPy arrays to also include the number of color channels. Since the images are grayscale, we will set `channels` to `1`. We will also normalize the values of our NumPy arrays to be in the range `[0,1]`.
 
 
-```python
+```
 # Pre-process images
 train_images = train_images.reshape(60000, 28, 28, 1)
 train_images = train_images / 255.0
@@ -85,7 +85,7 @@ test_images = test_images / 255.0
 We will build a simple CNN and compile it.
 
 
-```python
+```
 # Build the model
 model = tf.keras.models.Sequential([
     tf.keras.layers.Conv2D(64, (3,3), activation='relu', input_shape=(28, 28, 1)),
@@ -109,7 +109,7 @@ When training a classifier, it's often useful to see the [confusion matrix](http
 In the cell below, we will define a function that returns a Matplotlib figure containing the plotted confusion matrix.
 
 
-```python
+```
 def plot_confusion_matrix(cm, class_names):
     """
     Returns a matplotlib figure containing the plotted confusion matrix.
@@ -148,7 +148,7 @@ def plot_confusion_matrix(cm, class_names):
 We are now ready to train the CNN and regularly log the confusion matrix during the process. In the cell below, you will create a [Keras TensorBoard callback](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/TensorBoard) to log basic metrics.
 
 
-```python
+```
 # Clear logs prior to logging data.
 !rm -rf logs/image
 
@@ -168,7 +168,7 @@ file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
 Unfortunately, the Matplotlib file format cannot be logged as an image, but the PNG file format can be logged. So, you will create a helper function that takes a Matplotlib figure and converts it to PNG format so it can be written. 
 
 
-```python
+```
 def plot_to_image(figure):
     """
     Converts the matplotlib plot specified by 'figure' to a PNG image and
@@ -200,7 +200,7 @@ def plot_to_image(figure):
 In the cell below, you will define a function that calculates the confusion matrix.
 
 
-```python
+```
 def log_confusion_matrix(epoch, logs):
     
     # EXERCISE: Use the model to predict the values from the test_images.
@@ -228,13 +228,13 @@ We are now ready to run the TensorBoard.
 
 **Note:** If the notebook doesn't render the TensorBoard, sometimes is due to the local host. If you are experiencing problems try adding the `--host localhost` option to the `tensorboard` magic:
 
-```python
+```
 # Start TensorBoard
 %tensorboard --logdir logs/image --host localhost
 ```
 
 
-```python
+```
 # Start TensorBoard.
 %tensorboard --logdir logs/image 
 

@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -37,7 +37,7 @@ In this notebook, we'll go over a very common scenario where we build a Keras mo
 # Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -45,7 +45,7 @@ except:
 ```
 
 
-```python
+```
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
@@ -61,7 +61,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 We will download the [Cats vs. Dogs dataset](https://www.tensorflow.org/datasets/catalog/cats_vs_dogs) using TensorFlow Datasets. We will use a training set, a validation set, and a test set. Since the Cats vs. Dogs dataset doesn't have a validation or test split, we will create our own splits from the training set. We will use the first 80\% for training, the next 10\% for validation, and the last 10\% for testing.
 
 
-```python
+```
 splits = ['train[:80%]', 'train[80%:90%]', 'train[90%:]']
 
 splits, info = tfds.load('cats_vs_dogs', with_info=True, as_supervised=True, split=splits)
@@ -74,7 +74,7 @@ splits, info = tfds.load('cats_vs_dogs', with_info=True, as_supervised=True, spl
 Let's take a moment to look at the data.
 
 
-```python
+```
 num_examples = info.splits['train'].num_examples
 num_classes = info.features['label'].num_classes
 
@@ -86,14 +86,14 @@ print('\u2022 {:,} images'.format(num_examples))
 The labels are either 0 or 1, where 0 is a cat, and 1 is a dog. We will create a list with the corresponding class names, so that we can map labels to class names later on.
 
 
-```python
+```
 class_names = ['cat', 'dog']
 ```
 
 Let's see what one of the images looks like.
 
 
-```python
+```
 for image, label in train_examples.take(1):
     image = image.numpy()
     label = label.numpy()
@@ -110,7 +110,7 @@ print('The class name of this image is:', class_names[label])
 Below we can select the feature vector we want to use. The feature vector will be wrapped in a `hub.KerasLayer`.
 
 
-```python
+```
 model_selection = ("mobilenet_v2", 224, 1280) #@param ["(\"mobilenet_v2\", 224, 1280)", "(\"inception_v3\", 299, 2048)"] {type:"raw", allow-input: true}
 
 handle_base, pixels, FV_SIZE = model_selection
@@ -128,7 +128,7 @@ print("Using {} with input size {} and output dimension {}.".format(handle_base,
 ## Build Pipeline
 
 
-```python
+```
 def format_image(image, label):
     image = tf.image.resize(image, IMAGE_SIZE) / 255.0
     return  image, label
@@ -145,7 +145,7 @@ test_batches = test_examples.map(format_image).batch(BATCH_SIZE)
 Now we wrap the `feature_extractor` in a `tf.keras.Sequential` model, and add a new classification layer.
 
 
-```python
+```
 print("Building model with: ", MODULE_HANDLE, '\n')
 
 model = tf.keras.Sequential([
@@ -159,7 +159,7 @@ model.summary()
 ## (Optional) Perform Fine Tuning
 
 
-```python
+```
 do_fine_tuning = False #@param {type:"boolean"}
 
 if do_fine_tuning:
@@ -173,7 +173,7 @@ else:
 If we choose to do fine-tuning, we will use an `SGD` optimizer, otherwise, we will use the `adam` optimizer.
 
 
-```python
+```
 if do_fine_tuning:
     optimizer=tf.keras.optimizers.SGD(lr=0.002, momentum=0.9)
 else:
@@ -187,7 +187,7 @@ model.compile(optimizer=optimizer,
 ## Train the Model
 
 
-```python
+```
 EPOCHS = 1
 
 history = model.fit(train_batches,
@@ -200,7 +200,7 @@ history = model.fit(train_batches,
 We will now see how well our model performs on the testing set.
 
 
-```python
+```
 eval_results = model.evaluate(test_batches, verbose=0)
 
 for metric, value in zip(model.metrics_names, eval_results):

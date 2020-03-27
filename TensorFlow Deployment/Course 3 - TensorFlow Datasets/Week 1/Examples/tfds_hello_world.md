@@ -20,7 +20,7 @@ In this notebook we will take a look at the simple Hello World scenario of Tenso
 We'll start by importing TensorFlow, TensorFlow Datasets, and Matplotlib.
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -28,7 +28,7 @@ except:
 ```
 
 
-```python
+```
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
@@ -42,7 +42,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 Now we'll run the **ETL** code. First, to perform the **Extract** process we use `tfts.load`. This handles everything from downloading the raw data to parsing and splitting it, giving us a dataset. Next, we perform the **Transform** process. In this simple example, our transform process will just consist of shuffling the dataset. Finally, we **Load** one record by using the `take(1)` method. In this case, each record consists of an image and its corresponding label. After loading the record we proceed to plot the image and print its corresponding label. 
 
 
-```python
+```
 # EXTRACT
 dataset = tfds.load(name="mnist", split="train")
 
@@ -60,6 +60,6 @@ for data in dataset.take(1):
 ```
 
 
-```python
+```
 
 ```

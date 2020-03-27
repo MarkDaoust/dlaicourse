@@ -1,7 +1,7 @@
 ##### Copyright 2018 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -53,7 +53,7 @@ We will use 60,000 images to train the network and 10,000 images to evaluate how
 # Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -61,7 +61,7 @@ except:
 ```
 
 
-```python
+```
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -80,7 +80,7 @@ print('\u2022 GPU Device Found.' if tf.test.is_gpu_available() else '\u2022 GPU 
 We will use TensorFlow Datasets to load the Fashion MNIST dataset. 
 
 
-```python
+```
 splits = tfds.Split.ALL.subsplit(weighted=(80, 10, 10))
 
 splits, info = tfds.load('fashion_mnist', with_info=True, as_supervised=True, split=splits)
@@ -94,20 +94,20 @@ num_classes = info.features['label'].num_classes
 The class names are not included with the dataset, so we will specify them here.
 
 
-```python
+```
 class_names = ['T-shirt_top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 ```
 
 
-```python
+```
 # Create a labels.txt file with the class names
 with open('labels.txt', 'w') as f:
     f.write('\n'.join(class_names))
 ```
 
 
-```python
+```
 # The images in the dataset are 28 by 28 pixels.
 IMG_SIZE = 28
 ```
@@ -117,7 +117,7 @@ IMG_SIZE = 28
 ## Preprocess
 
 
-```python
+```
 # EXERCISE: Write a function to normalize the images.
 
 def format_example(image, label):
@@ -131,7 +131,7 @@ def format_example(image, label):
 ```
 
 
-```python
+```
 # Specify the batch size
 BATCH_SIZE = 256
 ```
@@ -139,7 +139,7 @@ BATCH_SIZE = 256
 ## Create Datasets From Images and Labels
 
 
-```python
+```
 # Create Datasets
 train_batches = train_examples.cache().shuffle(num_examples//4).batch(BATCH_SIZE).map(format_example).prefetch(1)
 validation_batches = validation_examples.cache().batch(BATCH_SIZE).map(format_example)
@@ -171,7 +171,7 @@ Non-trainable params: 0
 ```
 
 
-```python
+```
 # EXERCISE: Build and compile the model shown in the previous cell.
 
 model = tf.keras.Sequential([
@@ -201,7 +201,7 @@ model.compile(optimizer='adam',
 ## Train
 
 
-```python
+```
 model.fit(train_batches, 
           epochs=10,
           validation_data=validation_batches)
@@ -212,7 +212,7 @@ model.fit(train_batches,
 You will now save the model to TFLite. We should note, that you will probably see some warning messages when running the code below. These warnings have to do with software updates and should not cause any errors or prevent your code from running. 
 
 
-```python
+```
 # EXERCISE: Use the tf.saved_model API to save your model in the SavedModel format. 
 export_dir = 'saved_model/1'
 
@@ -220,7 +220,7 @@ export_dir = 'saved_model/1'
 ```
 
 
-```python
+```
 #@title Select mode of optimization
 mode = "Speed" #@param ["Default", "Storage", "Speed"]
 
@@ -233,7 +233,7 @@ else:
 ```
 
 
-```python
+```
 # EXERCISE: Use the TFLiteConverter SavedModel API to initialize the converter
 
 converter = # YOUR CODE HERE
@@ -246,7 +246,7 @@ tflite_model = # YOUR CODE HERE
 ```
 
 
-```python
+```
 tflite_model_file = pathlib.Path('./model.tflite')
 tflite_model_file.write_bytes(tflite_model)
 ```
@@ -254,7 +254,7 @@ tflite_model_file.write_bytes(tflite_model)
 # Test the Model with TFLite Interpreter 
 
 
-```python
+```
 # Load TFLite model and allocate tensors.
 interpreter = tf.lite.Interpreter(model_content=tflite_model)
 interpreter.allocate_tensors()
@@ -264,7 +264,7 @@ output_index = interpreter.get_output_details()[0]["index"]
 ```
 
 
-```python
+```
 # Gather results for the randomly sampled test images
 predictions = []
 test_labels = []
@@ -279,7 +279,7 @@ for img, label in test_batches.take(50):
 ```
 
 
-```python
+```
 #@title Utility functions for plotting
 # Utilities for plotting
 
@@ -318,7 +318,7 @@ def plot_value_array(i, predictions_array, true_label):
 ```
 
 
-```python
+```
 #@title Visualize the outputs { run: "auto" }
 index = 12 #@param {type:"slider", min:1, max:50, step:1}
 plt.figure(figsize=(6,3))
@@ -336,7 +336,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the files do not download when you run the cell, try running the cell a second time. Your browser might prompt you to allow multiple files to be downloaded. 
 
 
-```python
+```
 try:
     from google.colab import files
     
@@ -349,12 +349,12 @@ except:
 # Prepare the Test Images for Download (Optional)
 
 
-```python
+```
 !mkdir -p test_images
 ```
 
 
-```python
+```
 from PIL import Image
 
 for index, (image, label) in enumerate(test_batches.take(50)):
@@ -365,12 +365,12 @@ for index, (image, label) in enumerate(test_batches.take(50)):
 ```
 
 
-```python
+```
 !ls test_images
 ```
 
 
-```python
+```
 !zip -qq fmnist_test_images.zip -r test_images/
 ```
 
@@ -379,7 +379,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the Zip file does not download when you run the cell, try running the cell a second time.
 
 
-```python
+```
 try:
     files.download('fmnist_test_images.zip')
 except:

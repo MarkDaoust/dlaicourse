@@ -1,7 +1,7 @@
 ##### Copyright 2018 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -33,7 +33,7 @@
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -41,7 +41,7 @@ except:
 ```
 
 
-```python
+```
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -60,7 +60,7 @@ print('\u2022 GPU Device Found.' if tf.test.is_gpu_available() else '\u2022 GPU 
 Hub modules for TF 1.x won't work here, please use one of the selections provided.
 
 
-```python
+```
 module_selection = ("mobilenet_v2", 224, 1280) #@param ["(\"mobilenet_v2\", 224, 1280)", "(\"inception_v3\", 299, 2048)"] {type:"raw", allow-input: true}
 handle_base, pixels, FV_SIZE = module_selection
 MODULE_HANDLE ="https://tfhub.dev/google/tf2-preview/{}/feature_vector/4".format(handle_base)
@@ -76,7 +76,7 @@ This `tfds` package is the easiest way to load pre-defined data. If you have you
 
 
 
-```python
+```
 import tensorflow_datasets as tfds
 tfds.disable_progress_bar()
 ```
@@ -86,7 +86,7 @@ The `tfds.load` method downloads and caches the data, and returns a `tf.data.Dat
 Since `"cats_vs_dog"` doesn't define standard splits, use the subsplit feature to divide it into (train, validation, test) with 80%, 10%, 10% of the data respectively.
 
 
-```python
+```
 splits = tfds.Split.ALL.subsplit(weighted=(80, 10, 10))
 
 # Go to the TensorFlow Dataset's website and search for the Rock, Paper, Scissors dataset and load it here
@@ -105,7 +105,7 @@ Use the `tf.image` module to format the images for the task.
 Resize the images to a fixes input size, and rescale the input channels
 
 
-```python
+```
 def format_image(image, label):
     image = tf.image.resize(image, IMAGE_SIZE) / 255.0
     return  image, label
@@ -115,12 +115,12 @@ Now shuffle and batch the data
 
 
 
-```python
+```
 BATCH_SIZE = 32 #@param {type:"integer"}
 ```
 
 
-```python
+```
 # Prepare the examples by preprocessing the them and then batching them (and optionally prefetching them)
 
 # If you wish you can shuffle train set here
@@ -134,7 +134,7 @@ test_batches = # YOUR CODE HERE
 Inspect a batch
 
 
-```python
+```
 for image_batch, label_batch in train_batches.take(1):
     pass
 
@@ -149,12 +149,12 @@ All it takes is to put a linear classifier on top of the `feature_extractor_laye
 For speed, we start out with a non-trainable `feature_extractor_layer`, but you can also enable fine-tuning for greater accuracy.
 
 
-```python
+```
 do_fine_tuning = False #@param {type:"boolean"}
 ```
 
 
-```python
+```
 feature_extractor = hub.KerasLayer(MODULE_HANDLE,
                                    input_shape=IMAGE_SIZE + (3,), 
                                    output_shape=[FV_SIZE],
@@ -162,7 +162,7 @@ feature_extractor = hub.KerasLayer(MODULE_HANDLE,
 ```
 
 
-```python
+```
 print("Building model with", MODULE_HANDLE)
 
 model = tf.keras.Sequential([
@@ -174,7 +174,7 @@ model.summary()
 ```
 
 
-```python
+```
 #@title (Optional) Unfreeze some layers
 NUM_LAYERS = 10 #@param {type:"slider", min:1, max:50, step:1}
       
@@ -191,7 +191,7 @@ else:
 ## Training the Model
 
 
-```python
+```
 if do_fine_tuning:
     model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.002, momentum=0.9),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(),
@@ -203,7 +203,7 @@ else:
 ```
 
 
-```python
+```
 EPOCHS = 5
 
 hist = model.fit(train_batches,
@@ -214,14 +214,14 @@ hist = model.fit(train_batches,
 ## Export the Model
 
 
-```python
+```
 RPS_SAVED_MODEL = "rps_saved_model"
 ```
 
 Export the SavedModel
 
 
-```python
+```
 # Use TensorFlow's SavedModel API to export the SavedModel from the trained Keras model
 
 # YOUR CODE HERE
@@ -234,12 +234,12 @@ saved_model_cli show --dir $1 --tag_set serve --signature_def serving_default
 ```
 
 
-```python
+```
 loaded = tf.saved_model.load(RPS_SAVED_MODEL)
 ```
 
 
-```python
+```
 print(list(loaded.signatures.keys()))
 infer = loaded.signatures["serving_default"]
 print(infer.structured_input_signature)
@@ -249,7 +249,7 @@ print(infer.structured_outputs)
 ## Convert Using TFLite's Converter
 
 
-```python
+```
 # Intialize the TFLite converter to load the SavedModel
 converter = # YOUR CODE HERE
 
@@ -261,7 +261,7 @@ tflite_model = # YOUR CODE HERE
 ```
 
 
-```python
+```
 tflite_model_file = 'converted_model.tflite'
 
 with open(tflite_model_file, "wb") as f:
@@ -271,7 +271,7 @@ with open(tflite_model_file, "wb") as f:
 ## Test the TFLite Model Using the Python Interpreter
 
 
-```python
+```
 # Load TFLite model and allocate tensors.
 with open(tflite_model_file, 'rb') as fid:
     tflite_model = fid.read()
@@ -284,7 +284,7 @@ output_index = interpreter.get_output_details()[0]["index"]
 ```
 
 
-```python
+```
 # Gather results for the randomly sampled test images
 predictions = []
 
@@ -299,7 +299,7 @@ for img, label in tqdm(test_batches.take(10)):
 ```
 
 
-```python
+```
 #@title Utility functions for plotting
 # Utilities for plotting
 
@@ -330,7 +330,7 @@ def plot_image(i, predictions_array, true_label, img):
 ```
 
 
-```python
+```
 #@title Visualize the outputs { run: "auto" }
 index = 0 #@param {type:"slider", min:0, max:9, step:1}
 plt.figure(figsize=(6,3))
@@ -342,7 +342,7 @@ plt.show()
 Create a file to save the labels.
 
 
-```python
+```
 with open('labels.txt', 'w') as f:
     f.write('\n'.join(class_names))
 ```
@@ -352,7 +352,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the files do not download when you run the cell, try running the cell a second time. Your browser might prompt you to allow multiple files to be downloaded. 
 
 
-```python
+```
 try:
     from google.colab import files
     files.download('converted_model.tflite')
@@ -366,12 +366,12 @@ except:
 This part involves downloading additional test images for the Mobile Apps only in case you need to try out more samples
 
 
-```python
+```
 !mkdir -p test_images
 ```
 
 
-```python
+```
 from PIL import Image
 
 for index, (image, label) in enumerate(test_batches.take(50)):
@@ -382,12 +382,12 @@ for index, (image, label) in enumerate(test_batches.take(50)):
 ```
 
 
-```python
+```
 !ls test_images
 ```
 
 
-```python
+```
 !zip -qq rps_test_images.zip -r test_images/
 ```
 
@@ -396,7 +396,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the Zip file does not download when you run the cell, try running the cell a second time.
 
 
-```python
+```
 try:
     files.download('rps_test_images.zip')
 except:

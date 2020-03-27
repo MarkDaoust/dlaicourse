@@ -3,7 +3,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -20,7 +20,7 @@
 Let's explore how convolutions work by creating a basic convolution on a 2D Grey Scale image. First we can load the image by taking the 'ascent' image from scipy. It's a nice, built-in picture with lots of angles and lines. 
 
 
-```python
+```
 import cv2
 import numpy as np
 from scipy import misc
@@ -31,7 +31,7 @@ i = misc.ascent()
 Next, we can use the pyplot library to draw the image so we know what it looks like.
 
 
-```python
+```
 import matplotlib.pyplot as plt
 plt.grid(False)
 plt.gray()
@@ -47,7 +47,7 @@ plt.show()
 The image is stored as a numpy array, so we can create the transformed image by just copying that array. Let's also get the dimensions of the image so we can loop over it later. 
 
 
-```python
+```
 i_transformed = np.copy(i)
 size_x = i_transformed.shape[0]
 size_y = i_transformed.shape[1]
@@ -56,7 +56,7 @@ size_y = i_transformed.shape[1]
 Now we can create a filter as a 3x3 array. 
 
 
-```python
+```
 # This filter detects edges nicely
 # It creates a convolution that only passes through sharp edges and straight
 # lines.
@@ -82,7 +82,7 @@ i.e. the current pixel's neighbor above it and to the left will be multiplied by
 Finally we'll load the new value into the transformed image. 
 
 
-```python
+```
 for x in range(1,size_x-1):
   for y in range(1,size_y-1):
       convolution = 0.0
@@ -106,7 +106,7 @@ for x in range(1,size_x-1):
 Now we can plot the image to see the effect of the convolution!
 
 
-```python
+```
 # Plot the image. Note the size of the axes -- they are 512 by 512
 plt.gray()
 plt.grid(False)
@@ -122,7 +122,7 @@ plt.show()
 This code will show a (2, 2) pooling. The idea here is to iterate over the image, and look at the pixel and it's immediate neighbors to the right, beneath, and right-beneath. Take the largest of them and load it into the new image. Thus the new image will be 1/4 the size of the old -- with the dimensions on X and Y being halved by this process. You'll see that the features get maintained despite this compression!
 
 
-```python
+```
 new_x = int(size_x/2)
 new_y = int(size_y/2)
 newImage = np.zeros((new_x, new_y))

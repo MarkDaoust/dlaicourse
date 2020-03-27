@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -35,7 +35,7 @@ This guide trains a neural network model to classify [images of clothing, like s
 This guide uses [tf.keras](https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/keras.ipynb), a high-level API to build and train models in TensorFlow.
 
 
-```python
+```
 # TensorFlow and tf.keras
 import tensorflow as tf
 from tensorflow import keras
@@ -71,7 +71,7 @@ Fashion MNIST is intended as a drop-in replacement for the classic [MNIST](http:
 Note: Although these are really images, they are loaded as NumPy arrays and not binary image objects.
 
 
-```python
+```
 fashion_mnist = keras.datasets.fashion_mnist
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
@@ -95,7 +95,7 @@ print('test_images.shape: {}, of {}'.format(test_images.shape, test_images.dtype
 Let's use the simplest possible CNN, since we're not focused on the modeling part.
 
 
-```python
+```
 model = keras.Sequential([
   keras.layers.Conv2D(input_shape=(28,28,1), filters=8, kernel_size=3, 
                       strides=2, activation='relu', name='Conv1'),
@@ -121,7 +121,7 @@ print('\nTest accuracy: {}'.format(test_acc))
 To load our trained model into TensorFlow Serving we first need to save it in [SavedModel](https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/saved_model) format.  This will create a protobuf file in a well-defined directory hierarchy, and will include a version number.  [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving) allows us to select which version of a model, or "servable" we want to use when we make inference requests.  Each version will be exported to a different sub-directory under the given path.
 
 
-```python
+```
 # Fetch the Keras session and save the model
 # The signature definition is defined by the input and output tensors,
 # and stored with the default serving key
@@ -150,7 +150,7 @@ print('\nSaved model:')
 We'll use the command line utility `saved_model_cli` to look at the [MetaGraphDefs](https://www.tensorflow.org/versions/r1.15/api_docs/python/tf/MetaGraphDef) (the models) and [SignatureDefs](../signature_defs) (the methods you can call) in our SavedModel.  See [this discussion of the SavedModel CLI](https://github.com/tensorflow/docs/blob/master/site/en/r1/guide/saved_model.md#cli-to-inspect-and-execute-savedmodel) in the TensorFlow Guide.
 
 
-```python
+```
 !saved_model_cli show --dir {export_path} --all
 ```
 
@@ -165,7 +165,7 @@ We're preparing to install TensorFlow Serving using [Aptitude](https://wiki.debi
 Note: This example is running TensorFlow Serving natively, but [you can also run it in a Docker container](https://www.tensorflow.org/tfx/serving/docker), which is one of the easiest ways to get started using TensorFlow Serving.
 
 
-```python
+```
 # This is the same as you would do from your command line, but without the [arch=amd64], and no sudo
 # You would instead do:
 # echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list && \
@@ -181,7 +181,7 @@ curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.re
 This is all you need - one command line!
 
 
-```python
+```
 !apt-get install tensorflow-model-server
 ```
 
@@ -195,7 +195,7 @@ This is where we start running TensorFlow Serving and load our model.  After it 
 
 
 
-```python
+```
 os.environ["MODEL_DIR"] = MODEL_DIR
 ```
 
@@ -210,7 +210,7 @@ nohup tensorflow_model_server \
 ```
 
 
-```python
+```
 !tail server.log
 ```
 
@@ -219,7 +219,7 @@ nohup tensorflow_model_server \
 First, let's take a look at a random example from our test data.
 
 
-```python
+```
 def show(idx, title):
   plt.figure()
   plt.imshow(test_images[idx].reshape(28,28))
@@ -234,7 +234,7 @@ show(rando, 'An Example Image: {}'.format(class_names[test_labels[rando]]))
 Ok, that looks interesting.  How hard is that for you to recognize? Now let's create the JSON object for a batch of  three inference requests, and see how well our model recognizes things:
 
 
-```python
+```
 import json
 data = json.dumps({"signature_name": "serving_default", "instances": test_images[0:3].tolist()})
 print('Data: {} ... {}'.format(data[:50], data[len(data)-52:]))
@@ -247,7 +247,7 @@ print('Data: {} ... {}'.format(data[:50], data[len(data)-52:]))
 We'll send a predict request as a POST to our server's REST endpoint, and pass it three examples.  We'll ask our server to give us the latest version of our servable by not specifying a particular version.
 
 
-```python
+```
 !pip install -q requests
 
 import requests
@@ -264,7 +264,7 @@ show(0, 'The model thought this was a {} (class {}), and it was actually a {} (c
 Now let's specify a particular version of our servable.  Since we only have one, let's select version 1.  We'll also look at all three results.
 
 
-```python
+```
 headers = {"content-type": "application/json"}
 json_response = requests.post('http://localhost:8501/v1/models/fashion_model/versions/1:predict', data=data, headers=headers)
 predictions = json.loads(json_response.text)['predictions']

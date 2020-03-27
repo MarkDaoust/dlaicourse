@@ -1,7 +1,7 @@
 ##### Copyright 2018 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -33,7 +33,7 @@
 ## Setup 
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -41,7 +41,7 @@ except:
 ```
 
 
-```python
+```
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -62,7 +62,7 @@ print('\u2022 GPU Device Found.' if tf.test.is_gpu_available() else '\u2022 GPU 
 Hub modules for TF 1.x won't work here, please use one of the selections provided.
 
 
-```python
+```
 module_selection = ("mobilenet_v2", 224, 1280) #@param ["(\"mobilenet_v2\", 224, 1280)", "(\"inception_v3\", 299, 2048)"] {type:"raw", allow-input: true}
 handle_base, pixels, FV_SIZE = module_selection
 MODULE_HANDLE ="https://tfhub.dev/google/tf2-preview/{}/feature_vector/4".format(handle_base)
@@ -82,7 +82,7 @@ The `tfds.load` method downloads and caches the data, and returns a `tf.data.Dat
 Since `"cats_vs_dog"` doesn't define standard splits, use the subsplit feature to divide it into (train, validation, test) with 80%, 10%, 10% of the data respectively.
 
 
-```python
+```
 splits = tfds.Split.ALL.subsplit(weighted=(80, 10, 10))
 
 splits, info = tfds.load('cats_vs_dogs', with_info=True, as_supervised=True, split = splits)
@@ -100,7 +100,7 @@ Use the `tf.image` module to format the images for the task.
 Resize the images to a fixes input size, and rescale the input channels
 
 
-```python
+```
 def format_image(image, label):
     image = tf.image.resize(image, IMAGE_SIZE) / 255.0
     return  image, label
@@ -110,12 +110,12 @@ Now shuffle and batch the data
 
 
 
-```python
+```
 BATCH_SIZE = 32 #@param {type:"integer"}
 ```
 
 
-```python
+```
 train_batches = train_examples.shuffle(num_examples // 4).map(format_image).batch(BATCH_SIZE).prefetch(1)
 validation_batches = validation_examples.map(format_image).batch(BATCH_SIZE).prefetch(1)
 test_batches = test_examples.map(format_image).batch(1)
@@ -124,7 +124,7 @@ test_batches = test_examples.map(format_image).batch(1)
 Inspect a batch
 
 
-```python
+```
 for image_batch, label_batch in train_batches.take(1):
     pass
 
@@ -139,14 +139,14 @@ All it takes is to put a linear classifier on top of the `feature_extractor_laye
 For speed, we start out with a non-trainable `feature_extractor_layer`, but you can also enable fine-tuning for greater accuracy.
 
 
-```python
+```
 do_fine_tuning = False #@param {type:"boolean"}
 ```
 
 Load TFHub Module
 
 
-```python
+```
 feature_extractor = hub.KerasLayer(MODULE_HANDLE,
                                    input_shape=IMAGE_SIZE + (3,), 
                                    output_shape=[FV_SIZE],
@@ -154,7 +154,7 @@ feature_extractor = hub.KerasLayer(MODULE_HANDLE,
 ```
 
 
-```python
+```
 print("Building model with", MODULE_HANDLE)
 
 model = tf.keras.Sequential([
@@ -166,7 +166,7 @@ model.summary()
 ```
 
 
-```python
+```
 #@title (Optional) Unfreeze some layers
 NUM_LAYERS = 10 #@param {type:"slider", min:1, max:50, step:1}
       
@@ -183,7 +183,7 @@ else:
 ## Training the Model
 
 
-```python
+```
 if do_fine_tuning:
     model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.002, momentum=0.9),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(),
@@ -195,7 +195,7 @@ else:
 ```
 
 
-```python
+```
 EPOCHS = 5
 
 hist = model.fit(train_batches,
@@ -206,14 +206,14 @@ hist = model.fit(train_batches,
 ## Export the Model
 
 
-```python
+```
 CATS_VS_DOGS_SAVED_MODEL = "exp_saved_model"
 ```
 
 Export the SavedModel
 
 
-```python
+```
 tf.saved_model.save(model, CATS_VS_DOGS_SAVED_MODEL)
 ```
 
@@ -224,12 +224,12 @@ saved_model_cli show --dir $1 --tag_set serve --signature_def serving_default
 ```
 
 
-```python
+```
 loaded = tf.saved_model.load(CATS_VS_DOGS_SAVED_MODEL)
 ```
 
 
-```python
+```
 print(list(loaded.signatures.keys()))
 infer = loaded.signatures["serving_default"]
 print(infer.structured_input_signature)
@@ -241,7 +241,7 @@ print(infer.structured_outputs)
 Load the TFLiteConverter with the SavedModel
 
 
-```python
+```
 converter = tf.lite.TFLiteConverter.from_saved_model(CATS_VS_DOGS_SAVED_MODEL)
 ```
 
@@ -251,7 +251,7 @@ The simplest form of post-training quantization quantizes weights from floating 
 To further improve latency, hybrid operators dynamically quantize activations to 8-bits and perform computations with 8-bit weights and activations. This optimization provides latencies close to fully fixed-point inference. However, the outputs are still stored using floating point, so that the speedup with hybrid ops is less than a full fixed-point computation.
 
 
-```python
+```
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 ```
 
@@ -259,14 +259,14 @@ converter.optimizations = [tf.lite.Optimize.DEFAULT]
 We can get further latency improvements, reductions in peak memory usage, and access to integer only hardware accelerators by making sure all model math is quantized. To do this, we need to measure the dynamic range of activations and inputs with a representative data set. You can simply create an input data generator and provide it to our converter.
 
 
-```python
+```
 def representative_data_gen():
     for input_value, _ in test_batches.take(100):
         yield [input_value]
 ```
 
 
-```python
+```
 converter.representative_dataset = representative_data_gen
 ```
 
@@ -279,14 +279,14 @@ Ops that do not have quantized implementations will automatically be left in flo
 To require the converter to only output integer operations, one can specify:
 
 
-```python
+```
 converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
 ```
 
 ### Finally convert the model
 
 
-```python
+```
 tflite_model = converter.convert()
 tflite_model_file = 'converted_model.tflite'
 
@@ -297,7 +297,7 @@ with open(tflite_model_file, "wb") as f:
 ## Test the TFLite Model Using the Python Interpreter
 
 
-```python
+```
 # Load TFLite model and allocate tensors.
   
 interpreter = tf.lite.Interpreter(model_path=tflite_model_file)
@@ -308,7 +308,7 @@ output_index = interpreter.get_output_details()[0]["index"]
 ```
 
 
-```python
+```
 # Gather results for the randomly sampled test images
 predictions = []
 
@@ -323,7 +323,7 @@ for img, label in tqdm(test_batches.take(10)):
 ```
 
 
-```python
+```
 #@title Utility functions for plotting
 # Utilities for plotting
 
@@ -354,7 +354,7 @@ def plot_image(i, predictions_array, true_label, img):
 NOTE: Colab runs on server CPUs. At the time of writing this, TensorFlow Lite doesn't have super optimized server CPU kernels. For this reason post-training full-integer quantized models  may be slower here than the other kinds of optimized models. But for mobile CPUs, considerable speedup can be observed.
 
 
-```python
+```
 #@title Visualize the outputs { run: "auto" }
 index = 0 #@param {type:"slider", min:0, max:9, step:1}
 plt.figure(figsize=(6,3))
@@ -366,7 +366,7 @@ plt.show()
 Create a file to save the labels.
 
 
-```python
+```
 labels = ['cat', 'dog']
 
 with open('labels.txt', 'w') as f:
@@ -378,7 +378,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the files do not download when you run the cell, try running the cell a second time. Your browser might prompt you to allow multiple files to be downloaded. 
 
 
-```python
+```
 try:
     from google.colab import files
     files.download('converted_model.tflite')
@@ -392,12 +392,12 @@ except:
 This part involves downloading additional test images for the Mobile Apps only in case you need to try out more samples
 
 
-```python
+```
 !mkdir -p test_images
 ```
 
 
-```python
+```
 from PIL import Image
 
 for index, (image, label) in enumerate(test_batches.take(50)):
@@ -408,12 +408,12 @@ for index, (image, label) in enumerate(test_batches.take(50)):
 ```
 
 
-```python
+```
 !ls test_images
 ```
 
 
-```python
+```
 !zip -qq cats_vs_dogs_test_images.zip -r test_images/
 ```
 
@@ -422,7 +422,7 @@ If you are running this notebook in a Colab, you can run the cell below to downl
 **Note**: If the Zip file does not download when you run the cell, try running the cell a second time.
 
 
-```python
+```
 try:
     files.download('cats_vs_dogs_test_images.zip')
 except:

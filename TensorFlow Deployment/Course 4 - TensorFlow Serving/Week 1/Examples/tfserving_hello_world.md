@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -43,7 +43,7 @@ between a few pairs of numbers. After training our model, we will serve it with 
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -51,7 +51,7 @@ except:
 ```
 
 
-```python
+```
 import os
 import json
 import tempfile
@@ -72,7 +72,7 @@ Before we can install TensorFlow Serving, we need to add the `tensorflow-model-s
 **Note**: This notebook is running TensorFlow Serving natively, but [you can also run it in a Docker container](https://www.tensorflow.org/tfx/serving/docker), which is one of the easiest ways to get started using TensorFlow Serving. The Docker Engine is available for a variety of Linux platforms, Windows, and Mac.
 
 
-```python
+```
 # This is the same as you would do from your command line, but without the [arch=amd64], and no sudo
 # You would instead do:
 # echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list && \
@@ -88,7 +88,7 @@ curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.re
 Now that the Aptitude packages have been updated, we can use the `apt-get` command to install the TensorFlow model server.
 
 
-```python
+```
 !apt-get install tensorflow-model-server
 ```
 
@@ -103,7 +103,7 @@ $$
 between inputs (`xs`) and outputs (`ys`).
 
 
-```python
+```
 xs = np.array([-1.0,  0.0, 1.0, 2.0, 3.0, 4.0], dtype=float)
 ys = np.array([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], dtype=float)
 ```
@@ -121,7 +121,7 @@ We'll use the simplest possible model for this example. Since we are going to tr
 As a side note, we should mention that since the progress bar is not particularly useful when logged to a file, `verbose=2` is recommended when not running interactively (eg, in a production environment).
 
 
-```python
+```
 model = tf.keras.Sequential([tf.keras.layers.Dense(units=1, input_shape=[1])])
 
 model.compile(optimizer='sgd',
@@ -137,7 +137,7 @@ print("Finished training the model")
 Now that the model is trained, we can test it. If we give it the value `10`, we should get a value very close to `19`.
 
 
-```python
+```
 print(model.predict([10.0]))
 ```
 
@@ -146,7 +146,7 @@ print(model.predict([10.0]))
 To load the trained model into TensorFlow Serving we first need to save it in the [SavedModel](https://www.tensorflow.org/guide/saved_model) format.  This will create a protobuf file in a well-defined directory hierarchy, and will include a version number.  [TensorFlow Serving](https://www.tensorflow.org/tfx/serving/serving_config) allows us to select which version of a model, or "servable" we want to use when we make inference requests.  Each version will be exported to a different sub-directory under the given path.
 
 
-```python
+```
 MODEL_DIR = tempfile.gettempdir()
 
 version = 1
@@ -168,7 +168,7 @@ print('\nexport_path = {}'.format(export_path))
 We'll use the command line utility `saved_model_cli` to look at the `MetaGraphDefs` and `SignatureDefs` in our SavedModel. The signature definition is defined by the input and output tensors, and stored with the default serving key.
 
 
-```python
+```
 !saved_model_cli show --dir {export_path} --all
 ```
 
@@ -189,7 +189,7 @@ Our script will start running TensorFlow Serving and will load our model. Here a
 Also, because the variable that points to the directory containing the model is in Python, we need a way to tell the bash script where to find the model. To do this, we will write the value of the Python variable to an environment variable using the `os.environ` function.
 
 
-```python
+```
 os.environ["MODEL_DIR"] = MODEL_DIR
 ```
 
@@ -205,7 +205,7 @@ nohup tensorflow_model_server \
 Now we can take a look at the server log.
 
 
-```python
+```
 !tail server.log
 ```
 
@@ -214,7 +214,7 @@ Now we can take a look at the server log.
 We are now ready to construct a JSON object with some data so that we can make a couple of inferences. We will use $x=9$ and $x=10$ as our test data.
 
 
-```python
+```
 xs = np.array([[9.0], [10.0]])
 data = json.dumps({"signature_name": "serving_default", "instances": xs.tolist()})
 print(data)
@@ -225,7 +225,7 @@ print(data)
 Finally, we can make the inference request and get the inferences back. We'll send a predict request as a POST to our server's REST endpoint, and pass it our test data. We'll ask our server to give us the latest version of our model by not specifying a particular version. The response will be a JSON payload containing the predictions.
 
 
-```python
+```
 headers = {"content-type": "application/json"}
 json_response = requests.post('http://localhost:8501/v1/models/helloworld:predict', data=data, headers=headers)
 
@@ -235,7 +235,7 @@ print(json_response.text)
 We can also look at the predictions directly by loading the value for the `predictions` key.
 
 
-```python
+```
 predictions = json.loads(json_response.text)['predictions']
 print(predictions)
 ```

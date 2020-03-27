@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -109,7 +109,7 @@ example to make sure your environment is correctly setup. If it doesn't work,
 please refer to the [Installation](../install.md) guide for instructions.
 
 
-```python
+```
 #@test {"skip": true}
 
 # NOTE: If you are running a Jupyter notebook, and installing a locally built
@@ -121,7 +121,7 @@ please refer to the [Installation](../install.md) guide for instructions.
 ```
 
 
-```python
+```
 from __future__ import absolute_import, division, print_function
 
 import collections
@@ -135,7 +135,7 @@ tf.compat.v1.enable_v2_behavior()
 ```
 
 
-```python
+```
 @tff.federated_computation
 def hello_world():
   return 'Hello, World!'
@@ -170,7 +170,7 @@ materialize across an array of distributed sensors could be modeled as a value
 of this federated type.
 
 
-```python
+```
 federated_float_on_clients = tff.FederatedType(tf.float32, tff.CLIENTS)
 ```
 
@@ -182,12 +182,12 @@ the group `G` of devices hosting a federated value as the value's *placement*.
 Thus, `tff.CLIENTS` is an example of a placement.
 
 
-```python
+```
 str(federated_float_on_clients.member)
 ```
 
 
-```python
+```
 str(federated_float_on_clients.placement)
 ```
 
@@ -195,7 +195,7 @@ A federated type with member constituents `T` and placement `G` can be
 represented compactly as `{T}@G`, as shown below.
 
 
-```python
+```
 str(federated_float_on_clients)
 ```
 
@@ -219,7 +219,7 @@ known to be all equal. This is controlled by the third, optional `all_equal`
 parameter in the `tff.FederatedType` constructor (defaulting to `False`).
 
 
-```python
+```
 federated_float_on_clients.all_equal
 ```
 
@@ -229,7 +229,7 @@ opposed to `{T}@G`, that is, with the curly braces dropped to reflect the fact
 that the multi-set of member constituents consists of a single item).
 
 
-```python
+```
 str(tff.FederatedType(tf.float32, tff.CLIENTS, all_equal=True))
 ```
 
@@ -249,7 +249,7 @@ simple one-dimensional linear regression model. We can construct the
 tuples.
 
 
-```python
+```
 simple_regression_model_type = (
     tff.NamedTupleType([('a', tf.float32), ('b', tf.float32)]))
 
@@ -264,7 +264,7 @@ When this model is broadcasted to clients, the type of the resulting federated
 value can be represented as shown below.
 
 
-```python
+```
 str(tff.FederatedType(
     simple_regression_model_type, tff.CLIENTS, all_equal=True))
 ```
@@ -408,7 +408,7 @@ output. Here's how you can define a computation that calculates the average of
 the temperatures reported by the sensor array from our previous example.
 
 
-```python
+```
 @tff.federated_computation(tff.FederatedType(tf.float32, tff.CLIENTS))
 def get_average_temperature(sensor_readings):
   return tff.federated_mean(sensor_readings)
@@ -433,7 +433,7 @@ signatures. You can print the type signature of a computation by querying its
 `type_signature` property, as shown below.
 
 
-```python
+```
 str(get_average_temperature.type_signature)
 ```
 
@@ -486,7 +486,7 @@ with the `all_equal` bit set to `True`, you can just directly feed the (single)
 member constituent. This is also how the results are reported back to you.
 
 
-```python
+```
 get_average_temperature([68.5, 70.3, 69.8])
 ```
 
@@ -513,7 +513,7 @@ incorporated as a sub-component into another computation.
 You can verify this by adding a print statement, as follows:
 
 
-```python
+```
 @tff.federated_computation(tff.FederatedType(tf.float32, tff.CLIENTS))
 def get_average_temperature(sensor_readings):
 
@@ -615,7 +615,7 @@ For example, here's how we could implement a function that takes a number and
 adds `0.5` to it.
 
 
-```python
+```
 @tff.tf_computation(tf.float32)
 def add_half(x):
   return tf.add(x, 0.5)
@@ -651,7 +651,7 @@ we just defined can be treated by TFF just like any other TFF computation. In
 particular, it has a TFF type signature.
 
 
-```python
+```
 str(add_half.type_signature)
 ```
 
@@ -664,14 +664,14 @@ example, here's how you can use the `tff.federated_map` operator to apply
 devices.
 
 
-```python
+```
 @tff.federated_computation(tff.FederatedType(tf.float32, tff.CLIENTS))
 def add_half_on_clients(x):
   return tff.federated_map(add_half, x)
 ```
 
 
-```python
+```
 str(add_half_on_clients.type_signature)
 ```
 
@@ -682,7 +682,7 @@ rules as those we described for `tff.federated_computation`. They can be invoked
 as ordinary callables in Python, as follows.
 
 
-```python
+```
 add_half_on_clients([1.0, 3.0, 2.0])
 ```
 
@@ -715,7 +715,7 @@ serialized.
 For example, the following code will fail:
 
 
-```python
+```
 try:
 
   # Eager mode
@@ -737,7 +737,7 @@ On the other hand, invoking python functions that modify the current graph when
 called inside a `tff.tf_computation` is fine:
 
 
-```python
+```
 def get_constant_10():
   return tf.constant(10.)
 
@@ -764,7 +764,7 @@ tensors, or complex nested structures (we'll see examples of those later). The
 concise representation of a sequence of `T`-typed items is `T*`.
 
 
-```python
+```
 float32_sequence = tff.SequenceType(tf.float32)
 
 str(float32_sequence)
@@ -776,7 +776,7 @@ in TensorFlow that calculates the average of temperatures in a single local data
 set using the `tf.data.Dataset.reduce` operator.
 
 
-```python
+```
 @tff.tf_computation(tff.SequenceType(tf.float32))
 def get_local_temperature_average(local_temperatures):
   sum_and_count = (
@@ -785,7 +785,7 @@ def get_local_temperature_average(local_temperatures):
 ```
 
 
-```python
+```
 str(get_local_temperature_average.type_signature)
 ```
 
@@ -798,7 +798,7 @@ support for data sets in TensorFlow evolves).
 You can easily verify this as follows.
 
 
-```python
+```
 @tff.tf_computation(tff.SequenceType(tf.int32))
 def foo(x):
   return x.reduce(np.int32(0), lambda x, y: x + y)
@@ -820,7 +820,7 @@ below (as well as in other ways, e.g., as a `tf.data.Dataset` in eager mode, but
 for now, we'll keep it simple).
 
 
-```python
+```
 get_local_temperature_average([68.5, 70.3, 69.8])
 ```
 
@@ -832,7 +832,7 @@ the body of the computation so that you can see how the TFF type signature
 translates into the dataset's `output_types` and `output_shapes`.
 
 
-```python
+```
 @tff.tf_computation(tff.SequenceType(collections.OrderedDict([('A', tf.int32), ('B', tf.int32)])))
 def foo(ds):
   print ('element_structure = {}'.format(
@@ -841,12 +841,12 @@ def foo(ds):
 ```
 
 
-```python
+```
 str(foo.type_signature)
 ```
 
 
-```python
+```
 foo([{'A': 2, 'B': 3}, {'A': 4, 'B': 5}])
 ```
 
@@ -862,7 +862,7 @@ temperature readings. We can compute the global temperature average by averaging
 the sensors' local averages as follows.
 
 
-```python
+```
 @tff.federated_computation(
     tff.FederatedType(tff.SequenceType(tf.float32), tff.CLIENTS))
 def get_global_temperature_average(sensor_readings):
@@ -883,7 +883,7 @@ on-device data in federated learning, with sequence elements typically
 representing data batches (you will see examples of this shortly).
 
 
-```python
+```
 str(get_global_temperature_average.type_signature)
 ```
 
@@ -893,7 +893,7 @@ list iterates over the devices in the group represented by `tff.CLIENTS`, and
 the inner ones iterate over elements in each device's local sequence.
 
 
-```python
+```
 get_global_temperature_average([[68.0, 70.0], [71.0], [68.0, 72.0, 70.0]])
 ```
 

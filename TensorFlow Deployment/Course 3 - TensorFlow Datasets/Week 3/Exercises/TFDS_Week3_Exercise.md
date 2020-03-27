@@ -23,7 +23,7 @@ In this week's exercise, we'll go back to the classic cats versus dogs example, 
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -31,7 +31,7 @@ except:
 ```
 
 
-```python
+```
 import multiprocessing
 
 import tensorflow as tf
@@ -43,7 +43,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 ## Create and Compile the Model
 
 
-```python
+```
 def create_model():
     input_layer = tf.keras.layers.Input(shape=(224, 224, 3))
     base_model = tf.keras.applications.MobileNetV2(input_tensor=input_layer,
@@ -65,18 +65,18 @@ def create_model():
 Just for comparison, let's start by using the naive approach to Extract, Transform, and Load the data to train the model defined above. By naive approach we mean that we won't apply any of the new concepts of parallelization that we learned about in this module.
 
 
-```python
+```
 dataset_name = 'cats_vs_dogs'
 dataset, info = tfds.load(name=dataset_name, split=tfds.Split.TRAIN, with_info=True)
 ```
 
 
-```python
+```
 print(info.version)
 ```
 
 
-```python
+```
 def preprocess(features):
     image = features['image']
     image = tf.image.resize(image, (224, 224))
@@ -85,12 +85,12 @@ def preprocess(features):
 ```
 
 
-```python
+```
 train_dataset = dataset.map(preprocess).batch(32)
 ```
 
 
-```python
+```
 model = create_model()
 model.fit(train_dataset, epochs=5)
 ```
@@ -109,7 +109,7 @@ We start by creating a dataset of strings corresponding to the `file_pattern` of
 **NOTE:** The `file_pattern` given below contains `/root/` as the path to the `/tensorflow_datasets/` directory. This `file_pattern` will work in Google's Colab environment without any modifications. However, if you are running this notebook locally, you should change `/root/` to the appropriate path to the `/tensorflow_datasets/` directory on your computer.
 
 
-```python
+```
 file_pattern = f'/root/tensorflow_datasets/{dataset_name}/{info.version}/{dataset_name}-train.tfrecord*'
 files = tf.data.Dataset.list_files(file_pattern)
 ```
@@ -125,7 +125,7 @@ In the cell below you will use the [interleave](https://www.tensorflow.org/api_d
 Recall that `tf.data.experimental.AUTOTUNE` will delegate the decision about what level of parallelism to use to the `tf.data` runtime.
 
 
-```python
+```
 # EXERCISE: Parallelize the extraction of the stored TFRecords of
 # the cats_vs_dogs dataset by using the interleave operation with
 # cycle_length = 4 and the number of parallel calls set to tf.data.experimental.AUTOTUNE.
@@ -144,13 +144,13 @@ In order to be able to use these tensors to train our model, we must first parse
 
 In order to parse the `tf.train.Example` messages we need to create a `feature_description` dictionary. We need the `feature_description` dictionary because TFDS uses graph-execution and therefore, needs this description to build their shape and type signature. The basic structure of the `feature_description` dictionary looks like this:
 
-```python
+```
 feature_description = {'feature': tf.io.FixedLenFeature([], tf.Dtype, default_value)}
 ```
 
 The number of features in your `feature_description` dictionary will vary depending on your dataset. In our particular case, the features are `'image'` and `'label'` and can be seen in the sample output of the string tensor above. Therefore, our `feature_description` dictionary will look like this:
 
-```python
+```
 feature_description = {
     'image': tf.io.FixedLenFeature((), tf.string, ""),
     'label': tf.io.FixedLenFeature((), tf.int64, -1),
@@ -161,20 +161,20 @@ where we have given the default values of `""` and `-1` to the `'image'` and `'l
 
 The next step will be to parse the serialized `tf.train.Example` message using the `feature_description` dictionary given above. This can be done with the following code:
 
-```python
+```
 example = tf.io.parse_single_example(serialized_example, feature_description)
 ```
 
 Finally, we can decode the image by using:
 
-```python
+```
 image = tf.io.decode_jpeg(example['image'], channels=3)
 ```
 
 Use the code given above to complete the exercise below.
 
 
-```python
+```
 # EXERCISE: Fill in the missing code below.
 
 def read_tfrecord(serialized_example):
@@ -204,7 +204,7 @@ def read_tfrecord(serialized_example):
 You can now apply the `read_tfrecord` function to each item in the `train_dataset` by using the `map` method. You can parallelize the transformation of the `train_dataset` by using the `map` method with the `num_parallel_calls` set to the number of CPU cores.
 
 
-```python
+```
 # EXERCISE: Fill in the missing code below.
 
 # Get the number of CPU cores. 
@@ -221,7 +221,7 @@ train_dataset = # YOUR CODE HERE
 ## Cache the Dataset
 
 
-```python
+```
 # EXERCISE: Cache the train_dataset in-memory.
 train_dataset = # YOUR CODE HERE
 ```
@@ -229,7 +229,7 @@ train_dataset = # YOUR CODE HERE
 ## Parallelize Loading
 
 
-```python
+```
 # EXERCISE: Fill in the missing code below.
 
 # Shuffle and batch the train_dataset. Use a buffer size of 1024
@@ -242,7 +242,7 @@ train_dataset = # YOUR CODE HERE
 ```
 
 
-```python
+```
 model = create_model()
 model.fit(train_dataset, epochs=5)
 ```
@@ -250,6 +250,6 @@ model.fit(train_dataset, epochs=5)
 Due to the parallelization of the various stages of the ETL processes, you should see a decrease in training time as compared to the naive approach depicted at beginning of the notebook.
 
 
-```python
+```
 
 ```

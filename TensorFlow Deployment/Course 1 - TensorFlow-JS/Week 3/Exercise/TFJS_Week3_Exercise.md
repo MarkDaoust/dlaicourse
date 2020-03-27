@@ -17,12 +17,12 @@ You'll follow these steps:
 In order to use the tensorflow.js converter we need to install `tensorflowjs`.
 
 
-```python
+```
 !pip install tensorflowjs
 ```
 
 
-```python
+```
 import tensorflow as tf
 
 print('\u2022 Using TensorFlow Version:', tf.__version__)
@@ -35,7 +35,7 @@ Let's start by downloading our example data, a .zip of 2,000 JPG pictures of cat
 **NOTE:** The 2,000 images used in this exercise are excerpted from the ["Dogs vs. Cats" dataset](https://www.kaggle.com/c/dogs-vs-cats/data) available on Kaggle, which contains 25,000 images. Here, we use a subset of the full dataset to decrease training time for educational purposes.
 
 
-```python
+```
 !wget --no-check-certificate \
   https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip \
   -O /tmp/cats_and_dogs_filtered.zip
@@ -44,7 +44,7 @@ Let's start by downloading our example data, a .zip of 2,000 JPG pictures of cat
 The following python code will use the OS library to use Operating System libraries, giving you access to the file system, and the zipfile library allowing you to unzip the data. 
 
 
-```python
+```
 import os
 import zipfile
 
@@ -65,7 +65,7 @@ One thing to pay attention to in this sample: We do not explicitly label the ima
 Let's define each of these directories:
 
 
-```python
+```
 base_dir = '/tmp/cats_and_dogs_filtered'
 
 train_dir = os.path.join(base_dir, 'train')
@@ -84,7 +84,7 @@ validation_dogs_dir = os.path.join(validation_dir, 'dogs')
 Now, let's see what the filenames look like in the `cats` and `dogs` `train` directories (file naming conventions are the same in the `validation` directory):
 
 
-```python
+```
 train_cat_fnames = os.listdir( train_cats_dir )
 train_dog_fnames = os.listdir( train_dogs_dir )
 
@@ -95,7 +95,7 @@ print(train_dog_fnames[:10])
 Let's find out the total number of cat and dog images in the `train` and `validation` directories:
 
 
-```python
+```
 print('total training cat images :', len(os.listdir(      train_cats_dir ) ))
 print('total training dog images :', len(os.listdir(      train_dogs_dir ) ))
 
@@ -108,7 +108,7 @@ For both cats and dogs, we have 1,000 training images and 500 validation images.
 Now let's take a look at a few pictures to get a better sense of what the cat and dog datasets look like. First, we configure the `matplotlib` parameters:
 
 
-```python
+```
 %matplotlib inline
 
 import matplotlib.image as mpimg
@@ -124,7 +124,7 @@ pic_index = 0 # Index for iterating over images
 Now, we display a batch of 8 cat and 8 dog pictures. You can re-run the cell to see a fresh batch each time:
 
 
-```python
+```
 # Set up matplotlib fig, and size it to fit 4x4 pics
 fig = plt.gcf()
 fig.set_size_inches(ncols*4, nrows*4)
@@ -167,7 +167,7 @@ Finally we add the densely connected layers.
 Note that because we are facing a two-class classification problem, i.e. a *binary classification problem*, we will end our network with a [*sigmoid* activation](https://wikipedia.org/wiki/Sigmoid_function), so that the output of our network will be a single scalar between 0 and 1, encoding the probability that the current image is class 1 (as opposed to class 0).
 
 
-```python
+```
 model = tf.keras.models.Sequential([
     # Note the input shape is the desired size of the image 150x150 with 3 bytes color
     tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(150, 150, 3)),
@@ -188,7 +188,7 @@ model = tf.keras.models.Sequential([
 The `model.summary()` method call prints a summary of the NN 
 
 
-```python
+```
 model.summary()
 ```
 
@@ -199,7 +199,7 @@ Next, we'll configure the specifications for model training. We will train our m
 **NOTE**: In this case, using the [RMSprop optimization algorithm](https://wikipedia.org/wiki/Stochastic_gradient_descent#RMSProp) is preferable to [stochastic gradient descent](https://developers.google.com/machine-learning/glossary/#SGD) (SGD), because RMSprop automates learning-rate tuning for us. (Other optimizers, such as [Adam](https://wikipedia.org/wiki/Stochastic_gradient_descent#Adam) and [Adagrad](https://developers.google.com/machine-learning/glossary/#AdaGrad), also automatically adapt the learning rate during training, and would work equally well here.)
 
 
-```python
+```
 from tensorflow.keras.optimizers import RMSprop
 
 model.compile(optimizer=RMSprop(lr=0.001),
@@ -216,7 +216,7 @@ As you may already know, data that goes into neural networks should usually be n
 In Keras this can be done via the `keras.preprocessing.image.ImageDataGenerator` class using the `rescale` parameter. This `ImageDataGenerator` class allows you to instantiate generators of augmented image batches (and their labels) via `.flow(data, labels)` or `.flow_from_directory(directory)`. These generators can then be used with the Keras model methods that accept data generators as inputs: `fit_generator`, `evaluate_generator`, and `predict_generator`.
 
 
-```python
+```
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # All images will be rescaled by 1./255.
@@ -250,7 +250,7 @@ You'll see 4 values per epoch -- Loss, Accuracy, Validation Loss and Validation 
 The Loss and Accuracy are a great indication of progress of training. It's making a guess as to the classification of the training data, and then measuring it against the known label, calculating the result. Accuracy is the portion of correct guesses. The Validation accuracy is the measurement with the data that has not been used in training. As expected this would be a bit lower. You'll learn about why this occurs in the section on overfitting later in this course.
 
 
-```python
+```
 history = model.fit_generator(train_generator,
                               validation_data=validation_generator,
                               steps_per_epoch=100,
@@ -264,7 +264,7 @@ history = model.fit_generator(train_generator,
 Let's plot the training/validation accuracy and loss as collected during training:
 
 
-```python
+```
 #-----------------------------------------------------------
 # Retrieve a list of list results on training and test data
 # sets for each training epoch
@@ -309,7 +309,7 @@ In the cell below, save the trained model as a Keras model (`.h5` file).
 **HINT**: Use `model.save()`. Feel free to take a look at the `Linear-to-JavaScript.ipynb` example.
 
 
-```python
+```
 # EXERCISE: Save the trained model as a Keras HDF5 file. 
 
 saved_model_path = "./my_model.h5"
@@ -325,7 +325,7 @@ In the cell below, use the `tensorflowjs_converter` to convert the saved Keras m
 **HINT**: Make sure you specify the format of the input model as Keras by using the `--input_format` option. Feel free to take a look at the `Linear-to-JavaScript.ipynb` example and the [TensorFlow.js converter documentation](https://github.com/tensorflow/tfjs/tree/master/tfjs-converter#step-1-converting-a-tensorflow-savedmodel-tensorflow-hub-module-keras-hdf5-or-tfkeras-savedmodel-to-a-web-friendly-format).
 
 
-```python
+```
 # EXERCISE: Use the tensorflow.js converter to convert the saved Keras model into JSON format.
 
 # YOUR CODE HERE
@@ -335,6 +335,6 @@ In the cell below, use the `tensorflowjs_converter` to convert the saved Keras m
 If you did things correctly, you should now have a **JSON** file named `model.json` and various `.bin` files, such as `group1-shard1of10.bin`. The number of `.bin` files will depend on the size of your model: the larger your model, the greater the number of `.bin` files. The `model.json` file contains the architecture of your model and the `.bin` files will contain the weights of your model.
 
 
-```python
+```
 
 ```

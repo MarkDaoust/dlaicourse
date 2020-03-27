@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -50,7 +50,7 @@ Note: While useful, these structures are optional. There is no need to convert e
 ## Setup
 
 
-```python
+```
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 try:
@@ -94,7 +94,7 @@ The `tf.train.Feature` message type can accept one of the following three types 
 In order to convert a standard TensorFlow type to a `tf.Example`-compatible `tf.train.Feature`, you can use the shortcut functions below. Note that each function takes a scalar input value and returns a `tf.train.Feature` containing one of the three `list` types above:
 
 
-```python
+```
 # The following functions can be used to convert a value to a type compatible
 # with tf.Example.
 
@@ -118,7 +118,7 @@ Note: To stay simple, this example only uses scalar inputs. The simplest way to 
 Below are some examples of how these functions work. Note the varying input types and the standardized output types. If the input type for a function does not match one of the coercible types stated above, the function will raise an exception (e.g. `_int64_feature(1.0)` will error out, since `1.0` is a float, so should be used with the `_float_feature` function instead):
 
 
-```python
+```
 print(_bytes_feature(b'test_string'))
 print(_bytes_feature(u'test_bytes'.encode('utf-8')))
 
@@ -131,7 +131,7 @@ print(_int64_feature(1))
 All proto messages can be serialized to a binary-string using the `.SerializeToString` method:
 
 
-```python
+```
 feature = _float_feature(np.exp(1))
 
 feature.SerializeToString()
@@ -159,7 +159,7 @@ This dataset will have 4 features:
 Consider a sample consisting of 10,000 independently and identically distributed observations from each of the above distributions:
 
 
-```python
+```
 # The number of observations in the dataset.
 n_observations = int(1e4)
 
@@ -180,7 +180,7 @@ feature3 = np.random.randn(n_observations)
 Each of these features can be coerced into a `tf.Example`-compatible type using one of `_bytes_feature`, `_float_feature`, `_int64_feature`. You can then create a `tf.Example` message from these encoded features:
 
 
-```python
+```
 def serialize_example(feature0, feature1, feature2, feature3):
   """
   Creates a tf.Example message ready to be written to a file.
@@ -203,7 +203,7 @@ def serialize_example(feature0, feature1, feature2, feature3):
 For example, suppose you have a single observation from the dataset, `[False, 4, bytes('goat'), 0.9876]`. You can create and print the `tf.Example` message for this observation using `create_message()`. Each single observation will be written as a `Features` message as per the above. Note that the `tf.Example` [message](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/example/example.proto#L88) is just a wrapper around the `Features` message:
 
 
-```python
+```
 # This is an example observation from the dataset.
 
 example_observation = []
@@ -215,7 +215,7 @@ serialized_example
 To decode the message use the `tf.train.Example.FromString` method.
 
 
-```python
+```
 example_proto = tf.train.Example.FromString(serialized_example)
 example_proto
 ```
@@ -253,20 +253,20 @@ The easiest way to get the data into a dataset is to use the `from_tensor_slices
 Applied to an array, it returns a dataset of scalars:
 
 
-```python
+```
 tf.data.Dataset.from_tensor_slices(feature1)
 ```
 
 Applies to a tuple of arrays, it returns a dataset of tuples:
 
 
-```python
+```
 features_dataset = tf.data.Dataset.from_tensor_slices((feature0, feature1, feature2, feature3))
 features_dataset
 ```
 
 
-```python
+```
 # Use `take(1)` to only pull one example from the dataset.
 for f0,f1,f2,f3 in features_dataset.take(1):
   print(f0)
@@ -282,7 +282,7 @@ The mapped function must operate in TensorFlow graph mode—it must operate on a
 Using `tf.py_function` requires to specify the shape and type information that is otherwise unavailable:
 
 
-```python
+```
 def tf_serialize_example(f0,f1,f2,f3):
   tf_string = tf.py_function(
     serialize_example,
@@ -292,40 +292,40 @@ def tf_serialize_example(f0,f1,f2,f3):
 ```
 
 
-```python
+```
 tf_serialize_example(f0,f1,f2,f3)
 ```
 
 Apply this function to each element in the dataset:
 
 
-```python
+```
 serialized_features_dataset = features_dataset.map(tf_serialize_example)
 serialized_features_dataset
 ```
 
 
-```python
+```
 def generator():
   for features in features_dataset:
     yield serialize_example(*features)
 ```
 
 
-```python
+```
 serialized_features_dataset = tf.data.Dataset.from_generator(
     generator, output_types=tf.string, output_shapes=())
 ```
 
 
-```python
+```
 serialized_features_dataset
 ```
 
 And write them to a TFRecord file:
 
 
-```python
+```
 filename = 'test.tfrecord'
 writer = tf.data.experimental.TFRecordWriter(filename)
 writer.write(serialized_features_dataset)
@@ -340,7 +340,7 @@ More information on consuming TFRecord files using `tf.data` can be found [here]
 Using `TFRecordDataset`s can be useful for standardizing input data and optimizing performance.
 
 
-```python
+```
 filenames = [filename]
 raw_dataset = tf.data.TFRecordDataset(filenames)
 raw_dataset
@@ -353,7 +353,7 @@ Use the `.take` method to only show the first 10 records.
 Note: iterating over a `tf.data.Dataset` only works with eager execution enabled.
 
 
-```python
+```
 for raw_record in raw_dataset.take(10):
   print(repr(raw_record))
 ```
@@ -361,7 +361,7 @@ for raw_record in raw_dataset.take(10):
 These tensors can be parsed using the function below. Note that the `feature_description` is necessary here because datasets use graph-execution, and need this description to build their shape and type signature:
 
 
-```python
+```
 # Create a description of the features.
 feature_description = {
     'feature0': tf.io.FixedLenFeature([], tf.int64, default_value=0),
@@ -378,7 +378,7 @@ def _parse_function(example_proto):
 Alternatively, use `tf.parse example` to parse the whole batch at once. Apply this function to each item in the dataset using the `tf.data.Dataset.map` method:
 
 
-```python
+```
 parsed_dataset = raw_dataset.map(_parse_function)
 parsed_dataset
 ```
@@ -386,7 +386,7 @@ parsed_dataset
 Use eager execution to display the observations in the dataset. There are 10,000 observations in this dataset, but you will only display the first 10. The data is displayed as a dictionary of features. Each item is a `tf.Tensor`, and the `numpy` element of this tensor displays the value of the feature:
 
 
-```python
+```
 for parsed_record in parsed_dataset.take(10):
   print(repr(parsed_record))
 ```
@@ -402,7 +402,7 @@ The `tf.io` module also contains pure-Python functions for reading and writing T
 Next, write the 10,000 observations to the file `test.tfrecord`. Each observation is converted to a `tf.Example` message, then written to file. You can then verify that the file `test.tfrecord` has been created:
 
 
-```python
+```
 # Write the `tf.Example` observations to the file.
 with tf.io.TFRecordWriter(filename) as writer:
   for i in range(n_observations):
@@ -411,7 +411,7 @@ with tf.io.TFRecordWriter(filename) as writer:
 ```
 
 
-```python
+```
 !du -sh {filename}
 ```
 
@@ -420,14 +420,14 @@ with tf.io.TFRecordWriter(filename) as writer:
 These serialized tensors can be easily parsed using `tf.train.Example.ParseFromString`:
 
 
-```python
+```
 filenames = [filename]
 raw_dataset = tf.data.TFRecordDataset(filenames)
 raw_dataset
 ```
 
 
-```python
+```
 for raw_record in raw_dataset.take(1):
   example = tf.train.Example()
   example.ParseFromString(raw_record.numpy())
@@ -445,19 +445,19 @@ First, let's download [this image](https://commons.wikimedia.org/wiki/File:Felis
 ### Fetch the images
 
 
-```python
+```
 cat_in_snow  = tf.keras.utils.get_file('320px-Felis_catus-cat_on_snow.jpg', 'https://storage.googleapis.com/download.tensorflow.org/example_images/320px-Felis_catus-cat_on_snow.jpg')
 williamsburg_bridge = tf.keras.utils.get_file('194px-New_East_River_Bridge_from_Brooklyn_det.4a09796u.jpg','https://storage.googleapis.com/download.tensorflow.org/example_images/194px-New_East_River_Bridge_from_Brooklyn_det.4a09796u.jpg')
 ```
 
 
-```python
+```
 display.display(display.Image(filename=cat_in_snow))
 display.display(display.HTML('Image cc-by: <a "href=https://commons.wikimedia.org/wiki/File:Felis_catus-cat_on_snow.jpg">Von.grzanka</a>'))
 ```
 
 
-```python
+```
 display.display(display.Image(filename=williamsburg_bridge))
 display.display(display.HTML('<a "href=https://commons.wikimedia.org/wiki/File:New_East_River_Bridge_from_Brooklyn_det.4a09796u.jpg">From Wikimedia</a>'))
 ```
@@ -467,7 +467,7 @@ display.display(display.HTML('<a "href=https://commons.wikimedia.org/wiki/File:N
 As before, encode the features as types compatible with `tf.Example`. This stores the raw image string feature, as well as the height, width, depth, and arbitrary `label` feature. The latter is used when you write the file to distinguish between the cat image and the bridge image. Use `0` for the cat image, and `1` for the bridge image:
 
 
-```python
+```
 image_labels = {
     cat_in_snow : 0,
     williamsburg_bridge : 1,
@@ -475,7 +475,7 @@ image_labels = {
 ```
 
 
-```python
+```
 # This is an example, just using the cat image.
 image_string = open(cat_in_snow, 'rb').read()
 
@@ -503,7 +503,7 @@ print('...')
 Notice that all of the features are now stored in the `tf.Example` message. Next, functionalize the code above and write the example messages to a file named `images.tfrecords`:
 
 
-```python
+```
 # Write the raw image files to `images.tfrecords`.
 # First, process the two images into `tf.Example` messages.
 # Then, write to a `.tfrecords` file.
@@ -516,7 +516,7 @@ with tf.io.TFRecordWriter(record_file) as writer:
 ```
 
 
-```python
+```
 !du -sh {record_file}
 ```
 
@@ -525,7 +525,7 @@ with tf.io.TFRecordWriter(record_file) as writer:
 You now have the file—`images.tfrecords`—and can now iterate over the records in it to read back what you wrote. Given that in this example you will only reproduce the image, the only feature you will need is the raw image string. Extract it using the getters described above, namely `example.features.feature['image_raw'].bytes_list.value[0]`. You can also use the labels to determine which record is the cat and which one is the bridge:
 
 
-```python
+```
 raw_image_dataset = tf.data.TFRecordDataset('images.tfrecords')
 
 # Create a dictionary describing the features.
@@ -548,7 +548,7 @@ parsed_image_dataset
 Recover the images from the TFRecord file:
 
 
-```python
+```
 for image_features in parsed_image_dataset:
   image_raw = image_features['image_raw'].numpy()
   display.display(display.Image(data=image_raw))

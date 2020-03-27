@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -47,7 +47,7 @@ In this notebook we will go over some basic examples to help you get started wit
 ## Setup
 
 
-```python
+```
 try:
     %tensorflow_version 2.x
 except:
@@ -55,7 +55,7 @@ except:
 ```
 
 
-```python
+```
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -74,7 +74,7 @@ print("\u2022 Using TensorFlow Version:", tf.__version__)
 We will download the image of a puppy to test our TensorFlow Hub modules.
 
 
-```python
+```
 !wget -O dog.jpeg https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_960_720.jpg
     
 original_image = Image.open('./dog.jpeg')
@@ -83,7 +83,7 @@ original_image = Image.open('./dog.jpeg')
 Let's take a look at the image we just downloaded.
 
 
-```python
+```
 plt.figure(figsize=(6,6))
 plt.imshow(original_image)
 plt.show()
@@ -94,7 +94,7 @@ plt.show()
 We will now resize and normalize our image so that is compatible with the module we are going to use. In this notebook we will use the [MobileNet](https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4) model which was trained in ImageNet. For this module, the input images are expected to have color values in the range `[0,1]` and to have an input size of `(224,224)`.
 
 
-```python
+```
 IMAGE_SIZE = (224, 224)
     
 img = original_image.resize(IMAGE_SIZE)
@@ -104,7 +104,7 @@ img = np.array(img) / 255.0
 Let's now plot the reformatted image, to see what it looks like.
 
 
-```python
+```
 plt.figure(figsize=(5,5))
 plt.imshow(img)
 plt.title('New Image Size: {}'.format(img.shape), fontdict={'size': 16}, color='green')
@@ -116,7 +116,7 @@ plt.show()
 We will now get the labels for all the 1001 classes in the ImageNet dataset.
 
 
-```python
+```
 !wget -O labels.txt --quiet https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt
 
 with open('labels.txt', 'r') as f:
@@ -131,7 +131,7 @@ print('There are a total of {0} labels representing {0} classes.\n'.format(num_c
 Let's take a look at the first 5 labels. 
 
 
-```python
+```
 for label in labels[0:5]:
     print(label)
 ```
@@ -149,7 +149,7 @@ For example, in this case, we will be using the complete **MobileNet** model. If
 Finally, we'll make use of TensorFlow Hub's, `load` API to load the module into memory. 
 
 
-```python
+```
 MODULE_HANDLE = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4'
 module = hub.load(MODULE_HANDLE)
 ```
@@ -161,7 +161,7 @@ Once we have loaded the module, we can then start running inference on it. Note 
 In the cell below, we will pass the image of the puppy and get the top 5 predictions from our model along with their probability scores.
 
 
-```python
+```
 predictions = tf.nn.softmax(module([img]))[0]
 
 top_k_pred_values, top_k_indices = tf.math.top_k(predictions, k=5)
@@ -178,7 +178,7 @@ for value, i in zip(top_k_pred_values, top_k_indices):
 We can also integrate TensorFlow Hub modules into the high level Keras API. In this case, we make use of the `hub.KerasLayer` API to load it. We can add the `hub.KerasLayer` to a Keras `sequential` model along with an activation layer. Once the model is built, all the Keras model methods can be accessed like you would normally do in Keras.
 
 
-```python
+```
 model = tf.keras.Sequential([
         hub.KerasLayer(MODULE_HANDLE,
                        input_shape=IMAGE_SIZE + (3,)),
@@ -191,7 +191,7 @@ model = tf.keras.Sequential([
 To perform inference with the Keras model, we have to add a dimension to our image to account for the batch size. Remember that our Keras model expects the input to have shape `(batch_size, image_size)`, where the `image_size` includes the number of color channels.
 
 
-```python
+```
 # Add batch dimension
 img_arr = np.expand_dims(img, axis=0)
 ```
@@ -199,7 +199,7 @@ img_arr = np.expand_dims(img, axis=0)
 As we did previously, in the cell below we will pass the image of the puppy and get the top 5 predictions from our Keras model along with their probability scores.
 
 
-```python
+```
 predictions = model.predict(img_arr)[0]
  
 top_k_pred_values, top_k_indices = tf.math.top_k(predictions, k=5)
@@ -218,12 +218,12 @@ While we can use complete models as we did in the previous section, perhaps, the
 In the cell below we show an example of how a feature vector can be added to a Keras `sequential` model.
 
 
-```python
+```
 MODULE_HANDLE ="https://tfhub.dev/google/tf2-preview/mobilenet_v2/feature_vector/4"
 ```
 
 
-```python
+```
 # Number of classes in the new dataset
 NUM_CLASSES = 20
 
@@ -243,7 +243,7 @@ We can download TensorFlow Hub modules, by explicitly downloading the module as 
 To do this, we first have to download the Hub module by appending a query parameter to the module handled URL string. This is done by setting the TF Hub format query parameter as shown below. For now, only the compressed option is defined.
 
 
-```python
+```
 MODULE_HANDLE = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4?tf-hub-format=compressed'
 !wget -O ./saved_model.tar.gz $MODULE_HANDLE
 ```
@@ -251,7 +251,7 @@ MODULE_HANDLE = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classificatio
 Next, we need to decompress the tarball.
 
 
-```python
+```
 # Untar the tarball
 !mkdir -p ./saved_model
 !tar xvzf ./saved_model.tar.gz -C ./saved_model
@@ -262,14 +262,14 @@ Next, we need to decompress the tarball.
 We can load the SavedModel containing the saved TensorFlow Hub module by using `hub.load`.
 
 
-```python
+```
 module = hub.load('./saved_model')
 ```
 
 After the TensorFlow Hub module is loaded, we can start making inferences as shown below. As before, we will pass the image of the puppy and get the top 5 predictions from our model along with their probability scores.
 
 
-```python
+```
 predictions = tf.nn.softmax(module([img]))[0]
 
 top_k_pred_values, top_k_indices = tf.math.top_k(predictions, k=5)
@@ -288,7 +288,7 @@ Finally, we can change the download location of TensorFlow Hub modules to a more
 In Python, we can set this environment variable in the environment dictionary that's present in the Pythons `os` module as you can see below. 
 
 
-```python
+```
 new_dir = './hub_cache_dir'
 
 os.environ['TFHUB_CACHE_DIR'] = new_dir
@@ -297,7 +297,7 @@ os.environ['TFHUB_CACHE_DIR'] = new_dir
 Once we set the new location of the TF Hub cache directory environment variable, all the subsequent modules that we request will get downloaded to that location. 
 
 
-```python
+```
 MODULE_HANDLE = 'https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/4'
 module = hub.load(MODULE_HANDLE)
 ```
@@ -305,6 +305,6 @@ module = hub.load(MODULE_HANDLE)
 We can take a look the contents of the new directory and all its subdirectories by using the `-R` option.
 
 
-```python
+```
 !ls -R {new_dir}
 ```

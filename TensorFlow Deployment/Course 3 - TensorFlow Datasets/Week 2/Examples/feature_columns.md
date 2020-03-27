@@ -1,7 +1,7 @@
 ##### Copyright 2019 The TensorFlow Authors.
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -71,12 +71,12 @@ Following is a [description](https://archive.ics.uci.edu/ml/machine-learning-dat
 ## Import TensorFlow and other libraries
 
 
-```python
+```
 !pip install sklearn
 ```
 
 
-```python
+```
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
@@ -99,7 +99,7 @@ from sklearn.model_selection import train_test_split
 [Pandas](https://pandas.pydata.org/) is a Python library with many helpful utilities for loading and working with structured data. We will use Pandas to download the dataset from a URL, and load it into a dataframe.
 
 
-```python
+```
 URL = 'https://storage.googleapis.com/applied-dl/heart.csv'
 dataframe = pd.read_csv(URL)
 dataframe.head()
@@ -110,7 +110,7 @@ dataframe.head()
 The dataset we downloaded was a single CSV file. We will split this into train, validation, and test sets.
 
 
-```python
+```
 train, test = train_test_split(dataframe, test_size=0.2)
 train, val = train_test_split(train, test_size=0.2)
 print(len(train), 'train examples')
@@ -123,7 +123,7 @@ print(len(test), 'test examples')
 Next, we will wrap the dataframes with [tf.data](https://www.tensorflow.org/guide/datasets). This will enable us  to use feature columns as a bridge to map from the columns in the Pandas dataframe to features used to train the model. If we were working with a very large CSV file (so large that it does not fit into memory), we would use tf.data to read it from disk directly. That is not covered in this tutorial.
 
 
-```python
+```
 # A utility method to create a tf.data dataset from a Pandas Dataframe
 def df_to_dataset(dataframe, shuffle=True, batch_size=32):
   dataframe = dataframe.copy()
@@ -136,7 +136,7 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=32):
 ```
 
 
-```python
+```
 batch_size = 5 # A small batch sized is used for demonstration purposes
 train_ds = df_to_dataset(train, batch_size=batch_size)
 val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
@@ -148,7 +148,7 @@ test_ds = df_to_dataset(test, shuffle=False, batch_size=batch_size)
 Now that we have created the input pipeline, let's call it to see the format of the data it returns. We have used a small batch size to keep the output readable.
 
 
-```python
+```
 for feature_batch, label_batch in train_ds.take(1):
   print('Every feature:', list(feature_batch.keys()))
   print('A batch of ages:', feature_batch['age'])
@@ -161,13 +161,13 @@ We can see that the dataset returns a dictionary of column names (from the dataf
 TensorFlow provides many types of feature columns. In this section, we will create several types of feature columns, and demonstrate how they transform a column from the dataframe.
 
 
-```python
+```
 # We will use this batch to demonstrate several types of feature columns
 example_batch = next(iter(train_ds))[0]
 ```
 
 
-```python
+```
 # A utility method to create a feature column
 # and to transform a batch of data
 def demo(feature_column):
@@ -179,7 +179,7 @@ def demo(feature_column):
 The output of a feature column becomes the input to the model (using the demo function defined above, we will be able to see exactly how each column from the dataframe is transformed). A [numeric column](https://www.tensorflow.org/api_docs/python/tf/feature_column/numeric_column) is the simplest type of column. It is used to represent real valued features. When using this column, your model will receive the column value from the dataframe unchanged.
 
 
-```python
+```
 age = feature_column.numeric_column("age")
 demo(age)
 ```
@@ -190,7 +190,7 @@ In the heart disease dataset, most columns from the dataframe are numeric.
 Often, you don't want to feed a number directly into the model, but instead split its value into different categories based on numerical ranges. Consider raw data that represents a person's age. Instead of representing age as a numeric column, we could split the age into several buckets using a [bucketized column](https://www.tensorflow.org/api_docs/python/tf/feature_column/bucketized_column). Notice the one-hot values below describe which age range each row matches.
 
 
-```python
+```
 age_buckets = feature_column.bucketized_column(age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65])
 demo(age_buckets)
 ```
@@ -199,7 +199,7 @@ demo(age_buckets)
 In this dataset, thal is represented as a string (e.g. 'fixed', 'normal', or 'reversible'). We cannot feed strings directly to a model. Instead, we must first map them to numeric values. The categorical vocabulary columns provide a way to represent strings as a one-hot vector (much like you have seen above with age buckets). The vocabulary can be passed as a list using [categorical_column_with_vocabulary_list](https://www.tensorflow.org/api_docs/python/tf/feature_column/categorical_column_with_vocabulary_list), or loaded from a file using [categorical_column_with_vocabulary_file](https://www.tensorflow.org/api_docs/python/tf/feature_column/categorical_column_with_vocabulary_file).
 
 
-```python
+```
 thal = feature_column.categorical_column_with_vocabulary_list(
       'thal', ['fixed', 'normal', 'reversible'])
 
@@ -215,7 +215,7 @@ Suppose instead of having just a few possible strings, we have thousands (or mor
 Key point: using an embedding column is best when a categorical column has many possible values. We are using one here for demonstration purposes, so you have a complete example you can modify for a different dataset in the future.
 
 
-```python
+```
 # Notice the input to the embedding column is the categorical column
 # we previously created
 thal_embedding = feature_column.embedding_column(thal, dimension=8)
@@ -229,7 +229,7 @@ Another way to represent a categorical column with a large number of values is t
 Key point: An important downside of this technique is that there may be collisions in which different strings are mapped to the same bucket. In practice, this can work well for some datasets regardless.
 
 
-```python
+```
 thal_hashed = feature_column.categorical_column_with_hash_bucket(
       'thal', hash_bucket_size=1000)
 demo(feature_column.indicator_column(thal_hashed))
@@ -239,7 +239,7 @@ demo(feature_column.indicator_column(thal_hashed))
 Combining features into a single feature, better known as [feature crosses](https://developers.google.com/machine-learning/glossary/#feature_cross), enables a model to learn separate weights for each combination of features. Here, we will create a new feature that is the cross of age and thal. Note that `crossed_column` does not build the full table of all possible combinations (which could be very large). Instead, it is backed by a `hashed_column`, so you can choose how large the table is.
 
 
-```python
+```
 crossed_feature = feature_column.crossed_column([age_buckets, thal], hash_bucket_size=1000)
 demo(feature_column.indicator_column(crossed_feature))
 ```
@@ -250,7 +250,7 @@ We have seen how to use several types of feature columns. Now we will use them t
 Key point: If your aim is to build an accurate model, try a larger dataset of your own, and think carefully about which features are the most meaningful to include, and how they should be represented.
 
 
-```python
+```
 feature_columns = []
 
 # numeric cols
@@ -281,14 +281,14 @@ feature_columns.append(crossed_feature)
 Now that we have defined our feature columns, we will use a [DenseFeatures](https://www.tensorflow.org/versions/r2.0/api_docs/python/tf/keras/layers/DenseFeatures) layer to input them to our Keras model.
 
 
-```python
+```
 feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
 ```
 
 Earlier, we used a small batch size to demonstrate how feature columns worked. We create a new input pipeline with a larger batch size.
 
 
-```python
+```
 batch_size = 32
 train_ds = df_to_dataset(train, batch_size=batch_size)
 val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
@@ -298,7 +298,7 @@ test_ds = df_to_dataset(test, shuffle=False, batch_size=batch_size)
 ## Create, compile, and train the model
 
 
-```python
+```
 model = tf.keras.Sequential([
   feature_layer,
   layers.Dense(128, activation='relu'),
@@ -316,7 +316,7 @@ model.fit(train_ds,
 ```
 
 
-```python
+```
 loss, accuracy = model.evaluate(test_ds)
 print("Accuracy", accuracy)
 ```

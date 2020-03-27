@@ -64,7 +64,7 @@ packages on Linux, Mac, and Windows.
 $ python
 ```
 
-```python
+```
 >>> import tensorflow as tf
 >>> tf.enable_eager_execution()
 >>> tf.add(1, 2).numpy()

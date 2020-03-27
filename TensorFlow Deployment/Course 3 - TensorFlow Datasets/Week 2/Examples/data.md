@@ -3,7 +3,7 @@
 Licensed under the Apache License, Version 2.0 (the "License");
 
 
-```python
+```
 #@title Licensed under the Apache License, Version 2.0 (the "License"); { display-mode: "form" }
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -62,14 +62,14 @@ There are two distinct ways to create a dataset:
 
 
 
-```python
+```
 from __future__ import absolute_import, division, print_function, unicode_literals
 ```
 
 <!--TODO(markdaoust): when you remove the "nightly" from this notebook also revert the rejection_resample section -->
 
 
-```python
+```
 try:
   !pip install tf-nightly
 except Exception:
@@ -78,7 +78,7 @@ import tensorflow as tf
 ```
 
 
-```python
+```
 import pathlib
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -106,13 +106,13 @@ The `Dataset` object is a Python iterable. This makes it possible to consume its
 elements using a for loop:
 
 
-```python
+```
 dataset = tf.data.Dataset.from_tensor_slices([8, 3, 0, 8, 2, 1])
 dataset
 ```
 
 
-```python
+```
 for elem in dataset:
   print(elem.numpy())
 ```
@@ -121,7 +121,7 @@ Or by explicitly creating a Python iterator using `iter` and consuming its
 elements using `next`:
 
 
-```python
+```
 it = iter(dataset)
 
 print(next(it).numpy())
@@ -133,7 +133,7 @@ following example illustrates how to use the `reduce` transformation to compute
 the sum of a dataset of integers.
 
 
-```python
+```
 print(dataset.reduce(0, lambda state, value: state + value).numpy())
 ```
 
@@ -153,14 +153,14 @@ objects, matching the structure of the element, which may be a single component,
 a tuple of components, or a nested tuple of components. For example:
 
 
-```python
+```
 dataset1 = tf.data.Dataset.from_tensor_slices(tf.random.uniform([4, 10]))
 
 dataset1.element_spec
 ```
 
 
-```python
+```
 dataset2 = tf.data.Dataset.from_tensor_slices(
    (tf.random.uniform([4]),
     tf.random.uniform([4, 100], maxval=100, dtype=tf.int32)))
@@ -169,14 +169,14 @@ dataset2.element_spec
 ```
 
 
-```python
+```
 dataset3 = tf.data.Dataset.zip((dataset1, dataset2))
 
 dataset3.element_spec
 ```
 
 
-```python
+```
 # Dataset containing a sparse tensor.
 dataset4 = tf.data.Dataset.from_tensors(tf.SparseTensor(indices=[[0, 0], [1, 2]], values=[1, 2], dense_shape=[3, 4]))
 
@@ -184,7 +184,7 @@ dataset4.element_spec
 ```
 
 
-```python
+```
 # Use value_type to see the type of value represented by the element spec
 dataset4.element_spec.value_type
 ```
@@ -195,7 +195,7 @@ which apply a function to each element, the element structure determines the
 arguments of the function:
 
 
-```python
+```
 dataset1 = tf.data.Dataset.from_tensor_slices(
     tf.random.uniform([4, 10], minval=1, maxval=10, dtype=tf.int32))
 
@@ -203,13 +203,13 @@ dataset1
 ```
 
 
-```python
+```
 for z in dataset1:
   print(z.numpy())
 ```
 
 
-```python
+```
 dataset2 = tf.data.Dataset.from_tensor_slices(
    (tf.random.uniform([4]),
     tf.random.uniform([4, 100], maxval=100, dtype=tf.int32)))
@@ -218,14 +218,14 @@ dataset2
 ```
 
 
-```python
+```
 dataset3 = tf.data.Dataset.zip((dataset1, dataset2))
 
 dataset3
 ```
 
 
-```python
+```
 for a, (b,c) in dataset3:
   print('shapes: {a.shape}, {b.shape}, {c.shape}'.format(a=a, b=b, c=c))
 ```
@@ -242,12 +242,12 @@ from them is to convert them to `tf.Tensor` objects and use
 `Dataset.from_tensor_slices()`.
 
 
-```python
+```
 train, test = tf.keras.datasets.fashion_mnist.load_data()
 ```
 
 
-```python
+```
 images, labels = train
 images = images/255
 
@@ -268,7 +268,7 @@ Another common data source that can easily be ingested as a `tf.data.Dataset` is
 Caution: While this is a convienient approach it has limited portability and scalibility. It must run in the same python process that created the generator, and is still subject to the Python [GIL](https://en.wikipedia.org/wiki/Global_interpreter_lock).
 
 
-```python
+```
 def count(stop):
   i = 0
   while i<stop:
@@ -277,7 +277,7 @@ def count(stop):
 ```
 
 
-```python
+```
 for n in count(5):
   print(n)
 ```
@@ -289,12 +289,12 @@ The constructor takes a callable as input, not an iterator. This allows it to re
 The `output_types` argument is required because `tf.data` builds a `tf.Graph` internally, and graph edges require a `tf.dtype`.
 
 
-```python
+```
 ds_counter = tf.data.Dataset.from_generator(count, args=[25], output_types=tf.int32, output_shapes = (), )
 ```
 
 
-```python
+```
 for count_batch in ds_counter.repeat().batch(10).take(10):
   print(count_batch.numpy())
 ```
@@ -306,7 +306,7 @@ It's also important to note that the `output_shapes` and `output_types` follow t
 Here is an example generator that demonstrates both aspects, it returns tuples of arrays, where the second array is a vector with unknown length.
 
 
-```python
+```
 def gen_series():
   i = 0
   while True:
@@ -316,7 +316,7 @@ def gen_series():
 ```
 
 
-```python
+```
 for i, series in gen_series():
   print(i, ":", str(series))
   if i > 5:
@@ -328,7 +328,7 @@ The first output is an `int32` the second is a `float32`.
 The first item is a scalar, shape `()`, and the second is a vector of unknown length, shape `(None,)` 
 
 
-```python
+```
 ds_series = tf.data.Dataset.from_generator(
     gen_series, 
     output_types=(tf.int32, tf.float32), 
@@ -340,7 +340,7 @@ ds_series
 Now it can be used like a regular `tf.data.Dataset`. Note that when batching a dataset with a variable shape, you need to use `Dataset.padded_batch`.
 
 
-```python
+```
 ds_series_batch = ds_series.shuffle(20).padded_batch(10)
 
 ids, sequence_batch = next(iter(ds_series_batch))
@@ -354,7 +354,7 @@ For a more realistic example, try wrapping `preprocessing.image.ImageDataGenerat
 First download the data:
 
 
-```python
+```
 flowers = tf.keras.utils.get_file(
     'flower_photos',
     'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
@@ -364,23 +364,23 @@ flowers = tf.keras.utils.get_file(
 Create the `image.ImageDataGenerator`
 
 
-```python
+```
 img_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255, rotation_range=20)
 ```
 
 
-```python
+```
 images, labels = next(img_gen.flow_from_directory(flowers))
 ```
 
 
-```python
+```
 print(images.dtype, images.shape)
 print(labels.dtype, labels.shape)
 ```
 
 
-```python
+```
 ds = tf.data.Dataset.from_generator(
     img_gen.flow_from_directory, args=[flowers], 
     output_types=(tf.float32, tf.float32), 
@@ -404,7 +404,7 @@ pipeline.
 Here is an example using the test file from the French Street Name Signs (FSNS).
 
 
-```python
+```
 # Creates a dataset that reads all of the examples from two files.
 fsns_test_file = tf.keras.utils.get_file("fsns.tfrec", "https://storage.googleapis.com/download.tensorflow.org/data/fsns-20160927/testdata/fsns-00000-of-00001")
 ```
@@ -417,7 +417,7 @@ method that produces the dataset, taking filenames as an input argument:
 
 
 
-```python
+```
 dataset = tf.data.TFRecordDataset(filenames = [fsns_test_file])
 dataset
 ```
@@ -425,7 +425,7 @@ dataset
 Many TensorFlow projects use serialized `tf.train.Example` records in their TFRecord files. These need to be decoded before they can be inspected:
 
 
-```python
+```
 raw_example = next(iter(dataset))
 parsed = tf.train.Example.FromString(raw_example.numpy())
 
@@ -442,7 +442,7 @@ text files. Given one or more filenames, a `TextLineDataset` will produce one
 string-valued element per line of those files.
 
 
-```python
+```
 directory_url = 'https://storage.googleapis.com/download.tensorflow.org/data/illiad/'
 file_names = ['cowper.txt', 'derby.txt', 'butler.txt']
 
@@ -453,14 +453,14 @@ file_paths = [
 ```
 
 
-```python
+```
 dataset = tf.data.TextLineDataset(file_paths)
 ```
 
 Here are the first few lines of the first file:
 
 
-```python
+```
 for line in dataset.take(5):
   print(line.numpy())
 ```
@@ -468,7 +468,7 @@ for line in dataset.take(5):
 To alternate lines between files use `Dataset.interleave`. This makes it easier to shuffle files together. Here are the first, second and third lines from each translation:
 
 
-```python
+```
 files_ds = tf.data.Dataset.from_tensor_slices(file_paths)
 lines_ds = files_ds.interleave(tf.data.TextLineDataset, cycle_length=3)
 
@@ -484,19 +484,19 @@ not be desirable, for example, if the file starts with a header line, or contain
 find only survivors.
 
 
-```python
+```
 titanic_file = tf.keras.utils.get_file("train.csv", "https://storage.googleapis.com/tf-datasets/titanic/train.csv")
 titanic_lines = tf.data.TextLineDataset(titanic_file)
 ```
 
 
-```python
+```
 for line in titanic_lines.take(10):
   print(line.numpy())
 ```
 
 
-```python
+```
 def survived(line):
   return tf.not_equal(tf.strings.substr(line, 0, 1), "0")
 
@@ -504,7 +504,7 @@ survivors = titanic_lines.skip(1).filter(survived)
 ```
 
 
-```python
+```
 for line in survivors.take(10):
   print(line.numpy())
 ```
@@ -518,12 +518,12 @@ The CSV file format is a popular format for storing tabular data in plain text.
 For example:
 
 
-```python
+```
 titanic_file = tf.keras.utils.get_file("train.csv", "https://storage.googleapis.com/tf-datasets/titanic/train.csv")
 ```
 
 
-```python
+```
 df = pd.read_csv(titanic_file, index_col=None)
 df.head()
 ```
@@ -531,7 +531,7 @@ df.head()
 If your data fits in memory the same `Dataset.from_tensor_slices` method works on dictionaries, allowing this data to be easily imported:
 
 
-```python
+```
 titanic_slices = tf.data.Dataset.from_tensor_slices(dict(df))
 
 for feature_batch in titanic_slices.take(1):
@@ -546,14 +546,14 @@ The `tf.data` module provides methods to extract records from one or more CSV fi
 The `experimental.make_csv_dataset` function is the high level interface for reading sets of csv files. It supports column type inference and many other features, like batching and shuffling, to make usage simple.
 
 
-```python
+```
 titanic_batches = tf.data.experimental.make_csv_dataset(
     titanic_file, batch_size=4,
     label_name="survived")
 ```
 
 
-```python
+```
 for feature_batch, label_batch in titanic_batches.take(1):
   print("'survived': {}".format(label_batch))
   print("features:")
@@ -564,14 +564,14 @@ for feature_batch, label_batch in titanic_batches.take(1):
 You can use the `select_columns` argument if you only need a subset of columns.
 
 
-```python
+```
 titanic_batches = tf.data.experimental.make_csv_dataset(
     titanic_file, batch_size=4,
     label_name="survived", select_columns=['class', 'fare', 'survived'])
 ```
 
 
-```python
+```
 for feature_batch, label_batch in titanic_batches.take(1):
   print("'survived': {}".format(label_batch))
   for key, value in feature_batch.items():
@@ -581,7 +581,7 @@ for feature_batch, label_batch in titanic_batches.take(1):
 There is also a lower-level `experimental.CsvDataset` class which provides finer grained control. It does not support column type inference. Instead you must specify the type of each column. 
 
 
-```python
+```
 titanic_types  = [tf.int32, tf.string, tf.float32, tf.int32, tf.int32, tf.float32, tf.string, tf.string, tf.string, tf.string] 
 dataset = tf.data.experimental.CsvDataset(titanic_file, titanic_types , header=True)
 
@@ -592,7 +592,7 @@ for line in dataset.take(10):
 If some columns are empty, this low-level interface allows you to provide default values instead of column types.
 
 
-```python
+```
 %%writefile missing.csv
 1,2,3,4
 ,2,3,4
@@ -603,7 +603,7 @@ If some columns are empty, this low-level interface allows you to provide defaul
 ```
 
 
-```python
+```
 # Creates a dataset that reads all of the records from two CSV files, each with
 # four float columns which may have missing values.
 
@@ -614,7 +614,7 @@ dataset
 ```
 
 
-```python
+```
 for line in dataset:
   print(line.numpy())
 ```
@@ -626,7 +626,7 @@ These lines and fields can be removed with the `header` and `select_cols`
 arguments respectively.
 
 
-```python
+```
 # Creates a dataset that reads all of the records from two CSV files with
 # headers, extracting float data from columns 2 and 4.
 record_defaults = [999, 999] # Only provide defaults for the selected columns
@@ -636,7 +636,7 @@ dataset
 ```
 
 
-```python
+```
 for line in dataset:
   print(line.numpy())
 ```
@@ -646,7 +646,7 @@ for line in dataset:
 There are many datasets distributed as a set of files, where each file is an example.
 
 
-```python
+```
 flowers_root = tf.keras.utils.get_file(
     'flower_photos',
     'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
@@ -660,7 +660,7 @@ Note: these images are licensed CC-BY, see LICENSE.txt for details.
 The root directory contains a directory for each class:
 
 
-```python
+```
 for item in flowers_root.glob("*"):
   print(item.name)
 ```
@@ -668,7 +668,7 @@ for item in flowers_root.glob("*"):
 The files in each class directory are examples:
 
 
-```python
+```
 list_ds = tf.data.Dataset.list_files(str(flowers_root/'*/*'))
 
 for f in list_ds.take(5):
@@ -678,7 +678,7 @@ for f in list_ds.take(5):
 Read the data using the `tf.io.read_file` function and extract the label from the path, returning `(image, label)` pairs:
 
 
-```python
+```
 def process_path(file_path):
   label = tf.strings.split(file_path, '/')[-2]
   return tf.io.read_file(file_path), label
@@ -687,7 +687,7 @@ labeled_ds = list_ds.map(process_path)
 ```
 
 
-```python
+```
 for image_raw, label_text in labeled_ds.take(1):
   print(repr(image_raw.numpy()[:100]))
   print()
@@ -713,7 +713,7 @@ of the elements: i.e. for each component *i*, all elements must have a tensor
 of the exact same shape.
 
 
-```python
+```
 inc_dataset = tf.data.Dataset.range(100)
 dec_dataset = tf.data.Dataset.range(0, -100, -1)
 dataset = tf.data.Dataset.zip((inc_dataset, dec_dataset))
@@ -726,14 +726,14 @@ for batch in batched_dataset.take(4):
 While `tf.data` tries to propagate shape information, the default settings of `Dataset.batch` result in an unknown batch size because the last batch may not be full. Note the `None`s in the shape:
 
 
-```python
+```
 batched_dataset
 ```
 
 Use the `drop_remainder` argument to ignore that last batch, and get full shape propagation:
 
 
-```python
+```
 batched_dataset = dataset.batch(7, drop_remainder=True)
 batched_dataset
 ```
@@ -748,7 +748,7 @@ different shape by specifying one or more dimensions in which they may be
 padded.
 
 
-```python
+```
 dataset = tf.data.Dataset.range(100)
 dataset = dataset.map(lambda x: tf.fill([tf.cast(x, tf.int32)], x))
 dataset = dataset.padded_batch(4, padded_shapes=(None,))
@@ -785,13 +785,13 @@ The simplest way to iterate over a dataset in multiple epochs is to use the
 `Dataset.repeat()` transformation. First, create a dataset of titanic data:
 
 
-```python
+```
 titanic_file = tf.keras.utils.get_file("train.csv", "https://storage.googleapis.com/tf-datasets/titanic/train.csv")
 titanic_lines = tf.data.TextLineDataset(titanic_file)
 ```
 
 
-```python
+```
 def plot_batch_sizes(ds):
   batch_sizes = [batch.shape[0] for batch in ds]
   plt.bar(range(len(batch_sizes)), batch_sizes)
@@ -807,7 +807,7 @@ arguments without signaling the end of one epoch and the beginning of the next
 epoch. Because of this a `Dataset.batch` applied after `Dataset.repeat` will yield batches that straddle epoch boundaries:
 
 
-```python
+```
 titanic_batches = titanic_lines.repeat(3).batch(128)
 plot_batch_sizes(titanic_batches)
 ```
@@ -815,7 +815,7 @@ plot_batch_sizes(titanic_batches)
 If you need clear epoch separation, put `Dataset.batch` before the repeat:
 
 
-```python
+```
 titanic_batches = titanic_lines.batch(128).repeat(3)
 
 plot_batch_sizes(titanic_batches)
@@ -824,7 +824,7 @@ plot_batch_sizes(titanic_batches)
 If you would like to perform a custom computation (e.g. to collect statistics) at the end of each epoch then it's simplest to restart the dataset iteration on each epoch:
 
 
-```python
+```
 epochs = 3
 dataset = titanic_lines.batch(128)
 
@@ -844,7 +844,7 @@ Note: While large buffer_sizes shuffle more thoroughly, they can take a lot of m
 Add an index to the dataset so you can see the effect:
 
 
-```python
+```
 lines = tf.data.TextLineDataset(titanic_file)
 counter = tf.data.experimental.Counter()
 
@@ -857,7 +857,7 @@ dataset
 Since the `buffer_size` is 100, and the batch size is 20, the first batch contains no elements with an index over 120.
 
 
-```python
+```
 n,line_batch = next(iter(dataset))
 print(n.numpy())
 ```
@@ -867,7 +867,7 @@ As with `Dataset.batch` the order relative to `Dataset.repeat` matters.
 `Dataset.shuffle` doesn't signal the end of an epoch until the shuffle buffer is empty. So a shuffle placed before a repeat will show every element of one epoch before moving to the next: 
 
 
-```python
+```
 dataset = tf.data.Dataset.zip((counter, lines))
 shuffled = dataset.shuffle(buffer_size=100).batch(10).repeat(2)
 
@@ -877,7 +877,7 @@ for n, line_batch in shuffled.skip(60).take(5):
 ```
 
 
-```python
+```
 shuffle_repeat = [n.numpy().mean() for n, line_batch in shuffled]
 plt.plot(shuffle_repeat, label="shuffle().repeat()")
 plt.ylabel("Mean item ID")
@@ -887,7 +887,7 @@ plt.legend()
 But a repeat before a shuffle mixes the epoch boundaries together:
 
 
-```python
+```
 dataset = tf.data.Dataset.zip((counter, lines))
 shuffled = dataset.repeat(2).shuffle(buffer_size=100).batch(10)
 
@@ -897,7 +897,7 @@ for n, line_batch in shuffled.skip(55).take(15):
 ```
 
 
-```python
+```
 repeat_shuffle = [n.numpy().mean() for n, line_batch in shuffled]
 
 plt.plot(shuffle_repeat, label="shuffle().repeat()")
@@ -931,14 +931,14 @@ batched into a fixed size.
 Rebuild the flower filenames dataset:
 
 
-```python
+```
 list_ds = tf.data.Dataset.list_files(str(flowers_root/'*/*'))
 ```
 
 Write a function that manipulates the dataset elements.
 
 
-```python
+```
 # Reads an image from a file, decodes it into a dense tensor, and resizes it
 # to a fixed shape.
 def parse_image(filename):
@@ -955,7 +955,7 @@ def parse_image(filename):
 Test that it works.
 
 
-```python
+```
 file_path = next(iter(list_ds))
 image, label = parse_image(file_path)
 
@@ -971,7 +971,7 @@ show(image, label)
 Map it over the dataset.
 
 
-```python
+```
 images_ds = list_ds.map(parse_image)
 
 for image, label in images_ds.take(2):
@@ -991,7 +991,7 @@ Note: `tensorflow_addons` has a TensorFlow compatible `rotate` in `tensorflow_ad
 To demonstrate `tf.py_function`, try using the `scipy.ndimage.rotate` function instead:
 
 
-```python
+```
 import scipy.ndimage as ndimage
 
 def random_rotate_image(image):
@@ -1000,7 +1000,7 @@ def random_rotate_image(image):
 ```
 
 
-```python
+```
 image, label = next(iter(images_ds))
 image = random_rotate_image(image)
 show(image, label)
@@ -1009,7 +1009,7 @@ show(image, label)
 To use this function with `Dataset.map` the same caveats apply as with `Dataset.from_generator`, you need to describe the return shapes and types when you apply the function:
 
 
-```python
+```
 def tf_random_rotate_image(image, label):
   im_shape = image.shape
   [image,] = tf.py_function(random_rotate_image, [image], [tf.float32])
@@ -1018,7 +1018,7 @@ def tf_random_rotate_image(image, label):
 ```
 
 
-```python
+```
 rot_ds = images_ds.map(tf_random_rotate_image)
 
 for image, label in rot_ds.take(2):
@@ -1032,7 +1032,7 @@ TFRecord format. Each `tf.train.Example` record contains one or more "features",
 and the input pipeline typically converts these features into tensors.
 
 
-```python
+```
 fsns_test_file = tf.keras.utils.get_file("fsns.tfrec", "https://storage.googleapis.com/download.tensorflow.org/data/fsns-20160927/testdata/fsns-00000-of-00001")
 dataset = tf.data.TFRecordDataset(filenames = [fsns_test_file])
 dataset
@@ -1041,7 +1041,7 @@ dataset
 You can work with `tf.train.Example` protos outside of a `tf.data.Dataset` to understand the data:
 
 
-```python
+```
 raw_example = next(iter(dataset))
 parsed = tf.train.Example.FromString(raw_example.numpy())
 
@@ -1054,12 +1054,12 @@ _ = plt.title(feature["image/text"].bytes_list.value[0])
 ```
 
 
-```python
+```
 raw_example = next(iter(dataset))
 ```
 
 
-```python
+```
 def tf_parse(eg):
   example = tf.io.parse_example(
       eg[tf.newaxis], {
@@ -1070,20 +1070,20 @@ def tf_parse(eg):
 ```
 
 
-```python
+```
 img, txt = tf_parse(raw_example)
 print(txt.numpy())
 print(repr(img.numpy()[:20]), "...")
 ```
 
 
-```python
+```
 decoded = dataset.map(tf_parse)
 decoded
 ```
 
 
-```python
+```
 image_batch, text_batch = next(iter(decoded.batch(10)))
 image_batch.shape
 ```
@@ -1099,7 +1099,7 @@ Time series data is often organized with the time axis intact.
 Use a simple `Dataset.range` to demonstrate:
 
 
-```python
+```
 range_ds = tf.data.Dataset.range(100000)
 ```
 
@@ -1110,7 +1110,7 @@ The simplest approach would be to batch the data:
 #### Using `batch`
 
 
-```python
+```
 batches = range_ds.batch(10, drop_remainder=True)
 
 for batch in batches.take(5):
@@ -1120,7 +1120,7 @@ for batch in batches.take(5):
 Or to make dense predictions one step into the future, you might shift the features and labels by one step relative to each other:
 
 
-```python
+```
 def dense_1_step(batch):
   # Shift features and labels one step relative to each other.
   return batch[:-1], batch[1:]
@@ -1134,7 +1134,7 @@ for features, label in predict_dense_1_step.take(3):
 To predict a whole window instead of a fixed offset you can split the batches into two parts:
 
 
-```python
+```
 batches = range_ds.batch(15, drop_remainder=True)
 
 def label_next_5_steps(batch):
@@ -1150,7 +1150,7 @@ for features, label in predict_5_steps.take(3):
 To allow some overlap between the features of one batch and the labels of another, use `Dataset.zip`:
 
 
-```python
+```
 feature_length = 10
 label_length = 5
 
@@ -1168,7 +1168,7 @@ for features, label in predict_5_steps.take(3):
 While using `Dataset.batch` works, there are situations where you may need finer control. The `Dataset.window` method gives you complete control, but requires some care: it returns a `Dataset` of `Datasets`. See [Dataset structure](#dataset_structure) for details.
 
 
-```python
+```
 window_size = 5
 
 windows = range_ds.window(window_size, shift=1)
@@ -1179,7 +1179,7 @@ for sub_ds in windows.take(5):
 The `Dataset.flat_map` method can take a dataset of datasets and flatten it into a single dataset:
 
 
-```python
+```
  for x in windows.flat_map(lambda x: x).take(30):
    print(x.numpy(), end=' ')
 ```
@@ -1187,7 +1187,7 @@ The `Dataset.flat_map` method can take a dataset of datasets and flatten it into
 In nearly all cases, you will want to `.batch` the dataset first:
 
 
-```python
+```
 def sub_to_batch(sub):
   return sub.batch(window_size, drop_remainder=True)
 
@@ -1200,7 +1200,7 @@ Now, you can see that the `shift` argument controls how much each window moves o
 Putting this together you might write this function:
 
 
-```python
+```
 def make_window_dataset(ds, window_size=5, shift=1, stride=1):
   windows = ds.window(window_size, shift=shift, stride=stride)
 
@@ -1213,7 +1213,7 @@ def make_window_dataset(ds, window_size=5, shift=1, stride=1):
 ```
 
 
-```python
+```
 ds = make_window_dataset(range_ds, window_size=10, shift = 5, stride=3)
 
 for example in ds.take(10):
@@ -1223,7 +1223,7 @@ for example in ds.take(10):
 Then it's easy to extract labels, as before:
 
 
-```python
+```
 dense_labels_ds = ds.map(dense_1_step)
 
 for inputs,labels in dense_labels_ds.take(3):
@@ -1238,7 +1238,7 @@ Note: See [Imbalanced Data](../tutorials/keras/imbalanced_data.ipynb) for a full
 
 
 
-```python
+```
 zip_path = tf.keras.utils.get_file(
     origin='https://storage.googleapis.com/download.tensorflow.org/data/creditcard.zip',
     fname='creditcard.zip',
@@ -1248,7 +1248,7 @@ csv_path = zip_path.replace('.zip', '.csv')
 ```
 
 
-```python
+```
 creditcard_ds = tf.data.experimental.make_csv_dataset(
     csv_path, batch_size=1024, label_name="Class",
     # Shuffled datasets don't work with rejection resample in TF2.1
@@ -1260,7 +1260,7 @@ creditcard_ds = tf.data.experimental.make_csv_dataset(
 Now, check the distribution of classes, it is highly skewed:
 
 
-```python
+```
 def count(counts, batch):
   features, labels = batch
   class_1 = labels == 1
@@ -1276,7 +1276,7 @@ def count(counts, batch):
 ```
 
 
-```python
+```
 counts = creditcard_ds.take(10).reduce(
     initial_state={'class_0': 0, 'class_1': 0},
     reduce_func = count)
@@ -1297,7 +1297,7 @@ One approach to resampling a dataset is to use `sample_from_datasets`. This is m
 Here, just use filter to generate them from the credit card fraud data:
 
 
-```python
+```
 negative_ds = (
   creditcard_ds
     .unbatch()
@@ -1311,7 +1311,7 @@ positive_ds = (
 ```
 
 
-```python
+```
 for features, label in positive_ds.batch(10).take(1):
   print(label.numpy())
 ```
@@ -1319,7 +1319,7 @@ for features, label in positive_ds.batch(10).take(1):
 To use `tf.data.experimental.sample_from_datasets` pass the datasets, and the weight for each:
 
 
-```python
+```
 balanced_ds = tf.data.experimental.sample_from_datasets(
     [negative_ds, positive_ds], [0.5, 0.5]).shuffle(100).batch(10)
 ```
@@ -1327,7 +1327,7 @@ balanced_ds = tf.data.experimental.sample_from_datasets(
 Now the dataset produces examples of each class with 50/50 probability:
 
 
-```python
+```
 for features, labels in balanced_ds.take(10):
   print(labels.numpy())
 ```
@@ -1347,7 +1347,7 @@ Caution: This function only works correctly of the dataset returns the same sequ
 The elements of `creditcard_ds` are already `(features, label)` pairs. So the `class_func` just needs to return those labels:
 
 
-```python
+```
 def class_func(features, label):
   return label
 ```
@@ -1355,7 +1355,7 @@ def class_func(features, label):
 The resampler also needs a target distribution, and optionally an initial distribution estimate:
 
 
-```python
+```
 resampler = tf.data.experimental.rejection_resample(
     class_func, target_dist=[0.5, 0.5], initial_dist=fractions)
 ```
@@ -1363,21 +1363,21 @@ resampler = tf.data.experimental.rejection_resample(
 The resampler deals with individual examples, so you must `unbatch` the dataset before applying the resampler:
 
 
-```python
+```
 resample_ds = creditcard_ds.unbatch().apply(resampler).shuffle(100).batch(10)
 ```
 
 The resampler returns creates `(class, example)` pairs from the output of the `class_func`. In this case, the `example` was already a `(feature, label)` pair, so use `map` to drop the extra copy of the labels:
 
 
-```python
+```
 balanced_ds = resample_ds.map(lambda extra_label, features_and_label: features_and_label)
 ```
 
 Now the dataset produces examples of each class with 50/50 probability:
 
 
-```python
+```
 for features, labels in balanced_ds.take(10):
   print(labels.numpy())
 ```
@@ -1392,7 +1392,7 @@ The `tf.keras` API simplifies many aspects of creating and executing machine
 learning models. Its `.fit()` and `.evaluate()` and `.predict()` APIs support datasets as inputs. Here is a quick dataset and model setup:
 
 
-```python
+```
 train, test = tf.keras.datasets.fashion_mnist.load_data()
 
 images, labels = train
@@ -1401,7 +1401,7 @@ labels = labels.astype(np.int32)
 ```
 
 
-```python
+```
 fmnist_train_ds = tf.data.Dataset.from_tensor_slices((images, labels))
 fmnist_train_ds = fmnist_train_ds.shuffle(5000).batch(32)
 
@@ -1418,21 +1418,21 @@ model.compile(optimizer='adam',
  Passing a dataset of `(feature, label)` pairs is all that's needed for `Model.fit` and `Model.evaluate`:
 
 
-```python
+```
 model.fit(fmnist_train_ds, epochs=2)
 ```
 
 If you pass an infinite dataset, for example by calling `Dataset.repeat()`, you just need to also pass the `steps_per_epoch` argument:
 
 
-```python
+```
 model.fit(fmnist_train_ds.repeat(), epochs=2, steps_per_epoch=20)
 ```
 
 For evaluation you can pass the number of evaluation steps:
 
 
-```python
+```
 loss, accuracy = model.evaluate(fmnist_train_ds)
 print("Loss :", loss)
 print("Accuracy :", accuracy)
@@ -1441,7 +1441,7 @@ print("Accuracy :", accuracy)
 For long datasets, set the number of steps to evaluate:
 
 
-```python
+```
 loss, accuracy = model.evaluate(fmnist_train_ds.repeat(), steps=10)
 print("Loss :", loss)
 print("Accuracy :", accuracy)
@@ -1450,7 +1450,7 @@ print("Accuracy :", accuracy)
 The labels are not required in when calling `Model.predict`. 
 
 
-```python
+```
 predict_ds = tf.data.Dataset.from_tensor_slices(images).batch(32)
 result = model.predict(predict_ds, steps = 10)
 print(result.shape)
@@ -1459,7 +1459,7 @@ print(result.shape)
 But the labels are ignored if you do pass a dataset containing them:
 
 
-```python
+```
 result = model.predict(fmnist_train_ds, steps = 10)
 print(result.shape)
 ```
@@ -1471,7 +1471,7 @@ return the `Dataset` from the `input_fn` and the framework will take care of con
 for you. For example:
 
 
-```python
+```
 import tensorflow_datasets as tfds
 
 def train_input_fn():
@@ -1485,14 +1485,14 @@ def train_input_fn():
 ```
 
 
-```python
+```
 embark = tf.feature_column.categorical_column_with_hash_bucket('embark_town', 32)
 cls = tf.feature_column.categorical_column_with_vocabulary_list('class', ['First', 'Second', 'Third']) 
 age = tf.feature_column.numeric_column('age')
 ```
 
 
-```python
+```
 import tempfile
 model_dir = tempfile.mkdtemp()
 model = tf.estimator.LinearClassifier(
@@ -1503,12 +1503,12 @@ model = tf.estimator.LinearClassifier(
 ```
 
 
-```python
+```
 model = model.train(input_fn=train_input_fn, steps=100)
 ```
 
 
-```python
+```
 result = model.evaluate(train_input_fn, steps=10)
 
 for key, value in result.items():
@@ -1516,7 +1516,7 @@ for key, value in result.items():
 ```
 
 
-```python
+```
 for pred in model.predict(train_input_fn):
   for key, value in pred.items():
     print(key, ":", value)
